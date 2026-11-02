@@ -32,7 +32,10 @@ yarn-error.log*
 
 # env and agent secrets files
 .env*
+!.env.example
 *mcp_config.json
+stitch_screens/
+scripts/stitch_screens/
 
 # vercel
 .vercel

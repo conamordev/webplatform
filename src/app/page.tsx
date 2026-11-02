@@ -1,201 +1,574 @@
-import Link from "next/link";
-import {
-  Heart,
-  CreditCard,
-  Building2,
-  FileText,
-  ArrowRight,
-  Sparkles,
-  CheckCircle2,
-  Lock,
-} from "lucide-react";
+"use client";
 
+import React, { useState } from "react";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { useAuth } from "@/lib/auth-context";
 
 export default function HomePage() {
+  const { isLoggedIn, user, events } = useAuth();
+
+  // Calculator state
+  const [calculatorBudget, setCalculatorBudget] = useState(50000);
+  const commissionFee = Math.round(calculatorBudget * 0.08);
+
+  // Active event for logged in countdown
+  const upcomingEvent = events[0];
+
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col selection:bg-rose-100 selection:text-rose-900">
-      {/* Header */}
-      <header className="border-b border-rose-100/80 bg-white/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center border border-rose-200">
-              <Heart className="w-5 h-5 text-rose-600 fill-rose-600" />
-            </div>
-            <div>
-              <span className="font-serif text-2xl font-bold tracking-tight text-stone-900">
-                Con Amor
-              </span>
-              <span className="hidden sm:inline-block ml-2 text-xs font-sans text-rose-600 uppercase tracking-widest font-semibold">
-                Mesas de Regalos México
-              </span>
-            </div>
-          </div>
+    <div className="min-h-screen flex flex-col bg-background text-on-surface">
+      <Navbar />
 
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/dashboard/onboarding"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium text-white bg-rose-700 hover:bg-rose-800 transition-all duration-200 shadow-sm hover:shadow"
-            >
-              <span>Panel Anfitrión</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
       <main className="flex-1">
-        <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-32">
-          {/* Subtle decorative background blur */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rose-100/60 rounded-full blur-3xl pointer-events-none -z-10" />
-
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-rose-600" />
-              <span>Plataforma de Regalos de Boda en Efectivo</span>
+        {/* ============================================================== */}
+        {/* CONDITIONAL HERO: LOGGED IN vs UNAUTHENTICATED               */}
+        {/* ============================================================== */}
+        {isLoggedIn ? (
+          /* CON SESIÓN: Hero con accesos directos, cuenta regresiva y eventos */
+          <section className="relative min-h-[90vh] flex flex-col justify-center pt-32 pb-20 px-6 md:px-12 bg-negro-profundo text-white overflow-hidden">
+            {/* Background image */}
+            <div className="absolute inset-0 z-0">
+              <img
+                className="w-full h-full object-cover object-center opacity-40 scale-105 transition-transform duration-1000"
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2560&q=85"
+                alt="Con Amor Hero"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-negro-profundo via-negro-profundo/60 to-transparent" />
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-stone-900 leading-tight">
-              Celebra tu boda, <br className="hidden sm:inline" />
-              <span className="text-rose-700 italic">recibe tu amor sin fronteras</span>.
-            </h1>
+            <div className="relative z-10 max-w-6xl mx-auto w-full space-y-12">
+              {/* Header greeting */}
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-accent-gold text-xs font-sans uppercase tracking-[0.2em]">
+                  <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse" />
+                  <span>Panel de Anfitrión Activo</span>
+                </div>
+                <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+                  Bienvenida de vuelta, <br />
+                  <span className="text-accent-gold italic font-normal">{user.name}</span>.
+                </h1>
+                <p className="font-body text-white/80 text-base sm:text-xl max-w-2xl leading-relaxed">
+                  Tu evento está tomando forma. Revisa las confirmaciones de asistencia, aportaciones en tu mesa de regalos y gestiona tus fondos.
+                </p>
+              </div>
 
-            <p className="max-w-2xl mx-auto text-stone-600 text-base sm:text-lg leading-relaxed font-sans">
-              <strong>Con Amor</strong> es la plataforma de mesas de regalos para bodas en México. Permite a los anfitriones recibir aportaciones y regalos de sus invitados directo a su cuenta bancaria de forma segura y automatizada.
-            </p>
+              {/* Event Shortcuts by Type */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                {[
+                  { name: "Bodas", icon: "favorite", link: "/crear-evento?tipo=Boda" },
+                  { name: "Baby Shower", icon: "child_care", link: "/crear-evento?tipo=Baby%20Shower" },
+                  { name: "Cumpleaños", icon: "celebration", link: "/crear-evento?tipo=Cumpleaños" },
+                  { name: "Otro Evento", icon: "auto_awesome", link: "/crear-evento?tipo=Otro" },
+                ].map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.link}
+                    className="p-5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 transition-all duration-300 group flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-accent-gold text-2xl group-hover:scale-110 transition-transform">
+                        {item.icon}
+                      </span>
+                      <span className="font-sans text-xs uppercase tracking-wider font-semibold text-white">
+                        {item.name}
+                      </span>
+                    </div>
+                    <span className="material-symbols-outlined text-white/50 text-sm group-hover:translate-x-1 transition-transform">
+                      arrow_forward
+                    </span>
+                  </Link>
+                ))}
+              </div>
 
-            {/* Main Call to Action Button */}
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              {/* Countdown Banner to Next Event */}
+              {upcomingEvent && (
+                <div className="p-8 rounded-3xl bg-surface-container/10 backdrop-blur-xl border border-accent-gold/40 shadow-2xl space-y-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                      <span className="text-accent-gold text-xs font-sans uppercase tracking-[0.3em] block mb-1">
+                        Próximo Evento Destacado
+                      </span>
+                      <h3 className="font-serif text-2xl sm:text-3xl text-white font-bold">
+                        {upcomingEvent.title}
+                      </h3>
+                      <p className="font-body text-xs sm:text-sm text-white/70 mt-1">
+                        {upcomingEvent.date} — {upcomingEvent.locationName}, {upcomingEvent.city}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/evento/${upcomingEvent.slug}`}
+                        className="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-sans text-xs uppercase tracking-widest border border-white/20 transition-all"
+                      >
+                        Vista de Invitado
+                      </Link>
+                      <Link
+                        href={`/evento/${upcomingEvent.slug}/configuracion`}
+                        className="px-6 py-2.5 rounded-full bg-primary hover:bg-primary-container text-white font-sans text-xs uppercase tracking-widest transition-all shadow-lg flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-sm">tune</span>
+                        <span>Configurar Evento</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Countdown Clock Grid */}
+                  <div className="grid grid-cols-4 gap-4 max-w-lg">
+                    {[
+                      { label: "Días", val: "105" },
+                      { label: "Horas", val: "14" },
+                      { label: "Minutos", val: "38" },
+                      { label: "Segundos", val: "42" },
+                    ].map((t, idx) => (
+                      <div
+                        key={idx}
+                        className="text-center p-3 rounded-xl bg-black/40 border border-white/10"
+                      >
+                        <span className="font-serif text-2xl sm:text-3xl font-bold text-accent-gold block">
+                          {t.val}
+                        </span>
+                        <span className="font-sans text-[10px] text-white/60 uppercase tracking-widest">
+                          {t.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        ) : (
+          /* SIN SESIÓN: Hero Editorial de lujo con Carrusel */
+          <section className="relative min-h-[95vh] flex items-center justify-center pt-36 pb-24 px-6 md:px-12 bg-negro-profundo text-white overflow-hidden">
+            {/* Background Image Carousel with editorial tint */}
+            <div className="absolute inset-0 z-0">
+              <img
+                className="w-full h-full object-cover object-center opacity-45 scale-100 animate-pulse duration-1000"
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2560&q=85"
+                alt="Con Amor Editorial"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-negro-profundo/70 to-negro-profundo/40" />
+            </div>
+
+            <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
+              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-accent-gold font-sans text-xs uppercase tracking-[0.3em]">
+                <span className="material-symbols-outlined text-sm text-accent-gold">magic_button</span>
+                <span>Plataforma Mexicana de Regalos & RSVP</span>
+              </div>
+
+              <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[1.05]">
+                Celebra tu historia, <br />
+                <span className="text-accent-gold italic font-normal">recibe tu amor sin fronteras</span>.
+              </h1>
+
+              <p className="font-body text-base sm:text-xl text-white/85 max-w-3xl mx-auto leading-relaxed">
+                Crea un sitio web inolvidable para tu boda o celebración especial. Recibe regalos en efectivo directamente en tu cuenta bancaria de México con transferencias seguras protegidas por Stripe Connect Express.
+              </p>
+
+              {/* Call to Actions */}
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="/crear-evento"
+                  className="w-full sm:w-auto px-10 py-4 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.25em] hover:bg-primary-container transition-all shadow-xl hover:shadow-2xl active:scale-95 flex items-center justify-center gap-3 border border-white/20"
+                >
+                  <span>Crear Mi Evento Ahora</span>
+                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </Link>
+
+                <Link
+                  href="/evento/boda-sofia-mateo"
+                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/15 backdrop-blur-md text-white font-sans text-xs font-bold uppercase tracking-[0.25em] hover:bg-white/25 transition-all border border-white/30 flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-sm">visibility</span>
+                  <span>Ver Demo de Invitado</span>
+                </Link>
+              </div>
+
+              <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-white/60 font-sans tracking-widest uppercase">
+                <span className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-accent-gold text-base">verified</span>
+                  Verificación Oficial SAT / CNBV
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-accent-gold text-base">lock</span>
+                  Pagos Encriptados por Stripe
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-accent-gold text-base">payments</span>
+                  Retiro a Cualquier CLABE en México
+                </span>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ============================================================== */}
+        {/* SECTION: MIS EVENTOS (Visible when logged in)                   */}
+        {/* ============================================================== */}
+        {isLoggedIn && (
+          <section className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 pb-6 border-b border-muted-border">
+              <div>
+                <span className="font-sans text-xs text-primary font-bold uppercase tracking-[0.3em] block mb-2">
+                  Panel de Gestión
+                </span>
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold text-on-surface">
+                  Tus Eventos Activos
+                </h2>
+              </div>
               <Link
-                href="/dashboard/onboarding"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-all duration-200 shadow-md hover:shadow-lg transform active:scale-[0.99]"
+                href="/crear-evento"
+                className="mt-4 sm:mt-0 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-sans text-xs uppercase tracking-widest hover:bg-primary-container transition-all"
               >
-                <span>Probar Flujo de Anfitrión (Onboarding KYC)</span>
-                <ArrowRight className="w-5 h-5" />
+                <span className="material-symbols-outlined text-base">add</span>
+                <span>Registrar Nuevo Evento</span>
               </Link>
             </div>
 
-            <div className="pt-2 text-xs text-stone-500 flex items-center justify-center gap-2">
-              <Lock className="w-3.5 h-3.5 text-stone-400" />
-              <span>Verificación oficial respaldada por Stripe Connect Express en México (SAT & CNBV)</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {events.map((evt) => (
+                <div
+                  key={evt.id}
+                  className="bg-white rounded-3xl overflow-hidden border border-muted-border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <img
+                      src={evt.coverImage}
+                      alt={evt.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-sans text-[10px] uppercase tracking-widest font-semibold">
+                        {evt.type}
+                      </span>
+                    </div>
+                    {evt.isHost && (
+                      <div className="absolute top-4 right-4">
+                        <span className="px-3 py-1 rounded-full bg-accent-gold text-ink-black font-sans text-[10px] uppercase tracking-widest font-bold">
+                          Anfitrión
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <span className="text-[11px] font-sans text-secondary font-semibold uppercase tracking-wider block mb-1">
+                        {evt.date}
+                      </span>
+                      <h3 className="font-serif text-xl font-bold text-ink-black line-clamp-1">
+                        {evt.title}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant font-body line-clamp-2 mt-1">
+                        {evt.locationName} — {evt.city}
+                      </p>
+                    </div>
+
+                    {/* Stats pills */}
+                    <div className="grid grid-cols-2 gap-2 pt-3 border-t border-muted-border/60 text-xs font-sans">
+                      <div className="bg-surface-container-low p-2.5 rounded-xl">
+                        <span className="text-[10px] text-on-surface-variant uppercase block">
+                          Regalos
+                        </span>
+                        <span className="font-serif text-base font-bold text-primary">
+                          {evt.gifts.length} listados
+                        </span>
+                      </div>
+                      <div className="bg-surface-container-low p-2.5 rounded-xl">
+                        <span className="text-[10px] text-on-surface-variant uppercase block">
+                          RSVP
+                        </span>
+                        <span className="font-serif text-base font-bold text-primary">
+                          {evt.rsvps.filter((r) => r.attending).length} confirmados
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pt-2 flex items-center gap-2">
+                      <Link
+                        href={`/evento/${evt.slug}`}
+                        className="flex-1 text-center py-2.5 rounded-xl border border-primary text-primary hover:bg-primary/5 font-sans text-xs uppercase tracking-wider font-semibold transition-all"
+                      >
+                        Ver Sitio
+                      </Link>
+                      <Link
+                        href={`/evento/${evt.slug}/configuracion`}
+                        className="flex-1 text-center py-2.5 rounded-xl bg-primary text-white hover:bg-primary-container font-sans text-xs uppercase tracking-wider font-semibold transition-all shadow"
+                      >
+                        Builder
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ============================================================== */}
+        {/* SECTION: CÓMO CREAR UN EVENTO (Paso a paso)                     */}
+        {/* ============================================================== */}
+        <section className="py-24 px-6 md:px-12 bg-surface-container border-y border-muted-border">
+          <div className="max-w-6xl mx-auto space-y-16">
+            <div className="text-center max-w-2xl mx-auto space-y-4">
+              <span className="font-sans text-xs font-bold text-primary uppercase tracking-[0.4em] block">
+                Simplicidad & Elegancia
+              </span>
+              <h2 className="font-serif text-3xl sm:text-5xl font-bold text-on-surface">
+                Cómo Funciona Con Amor
+              </h2>
+              <p className="font-body text-on-surface-variant text-base sm:text-lg">
+                Diseñado para que anfitriones e invitados disfruten de una experiencia sin complicaciones ni comisiones ocultas.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                {
+                  step: "01",
+                  title: "Registra tu Evento",
+                  desc: "Selecciona si es boda, baby shower, cumpleaños u otra ocasión. Ingresa la fecha, ubicación y dedicatoria para tus invitados.",
+                  icon: "edit_calendar",
+                },
+                {
+                  step: "02",
+                  title: "Personaliza & Añade Regalos",
+                  desc: "Elige la paleta de colores editorial, tipografía y crea tu mesa de regalos con aportes libres o metas fijas (luna de miel, hogar, experiencias).",
+                  icon: "palette",
+                },
+                {
+                  step: "03",
+                  title: "Recibe Pagos en tu Banco",
+                  desc: "Tus invitados pagan con tarjeta o transferencia. Conectas tu cuenta bancaria mexicana con Stripe Express y recibes tu dinero con total seguridad.",
+                  icon: "account_balance",
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white p-8 rounded-3xl border border-muted-border shadow-sm hover:shadow-lg transition-all space-y-5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-serif text-3xl font-bold text-accent-gold italic">
+                      {item.step}
+                    </span>
+                    <div className="w-12 h-12 rounded-2xl bg-surface-container-low text-primary flex items-center justify-center">
+                      <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                    </div>
+                  </div>
+                  <h3 className="font-serif text-2xl font-bold text-ink-black">{item.title}</h3>
+                  <p className="font-body text-sm text-on-surface-variant leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-6">
+              <Link
+                href="/como-crear-evento"
+                className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-[0.25em] text-primary hover:text-ink-black font-bold border-b border-primary pb-1"
+              >
+                <span>Conoce el paso a paso detallado</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Feature Cards / KYC Overview */}
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
-              Validación KYC y Recepción de Documentos en México
+        {/* ============================================================== */}
+        {/* SECTION: DEMOS INTERACTIVAS (Plantillas reales)                 */}
+        {/* ============================================================== */}
+        <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-16">
+          <div className="text-center max-w-2xl mx-auto space-y-4">
+            <span className="font-sans text-xs font-bold text-primary uppercase tracking-[0.4em] block">
+              Inspiración Editorial
+            </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-on-surface">
+              Plantillas & Demos de Prueba
             </h2>
-            <p className="text-sm text-stone-600">
-              Integración nativa con componentes embebidos de Stripe para que los novios completen su registro sin salir de Con Amor.
+            <p className="font-body text-on-surface-variant text-base sm:text-lg">
+              Explora cómo ven tus invitados el sitio web, la mesa de regalos y el formulario de RSVP en acción.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="bg-white p-6 rounded-2xl border border-stone-200/90 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-                <FileText className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Boda — Sofía & Mateo",
+                type: "Boda de Destino en San Miguel",
+                image:
+                  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+                slug: "boda-sofia-mateo",
+                tag: "Boda",
+              },
+              {
+                title: "Baby Shower — Valentina",
+                type: "Celebración Campirana en Jardín",
+                image:
+                  "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=1200&q=80",
+                slug: "baby-shower-valetina",
+                tag: "Baby Shower",
+              },
+              {
+                title: "Cumpleaños — Camila Turns 30",
+                type: "Gala Nocturna Golden Hour",
+                image:
+                  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
+                slug: "cumpleanos-camila-30",
+                tag: "Cumpleaños",
+              },
+            ].map((demo, idx) => (
+              <div
+                key={idx}
+                className="group relative rounded-3xl overflow-hidden border border-muted-border shadow-md bg-white flex flex-col"
+              >
+                <div className="relative h-72 overflow-hidden">
+                  <img
+                    src={demo.image}
+                    alt={demo.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white font-sans text-[10px] uppercase tracking-widest font-semibold border border-white/30">
+                      {demo.tag}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <span className="text-[10px] font-sans uppercase tracking-widest text-accent-gold block">
+                      {demo.type}
+                    </span>
+                    <h3 className="font-serif text-2xl font-bold">{demo.title}</h3>
+                  </div>
+                </div>
+
+                <div className="p-6 flex items-center justify-between bg-surface-container-low">
+                  <span className="font-sans text-xs text-on-surface-variant font-medium">
+                    Vista interactiva
+                  </span>
+                  <Link
+                    href={`/evento/${demo.slug}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-sans text-xs uppercase tracking-widest hover:bg-primary-container transition-all shadow"
+                  >
+                    <span>Ver Plantilla</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </Link>
+                </div>
               </div>
-              <h3 className="text-base font-semibold text-stone-900">
-                Documentos Oficiales MX
-              </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Recepción segura de <strong>INE</strong> o <strong>Pasaporte mexicano vigente</strong> mediante captura de cámara o carga de archivo.
+            ))}
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* SECTION: CALCULADORA DE COMISIONES TRANSPARENTES                */}
+        {/* ============================================================== */}
+        <section className="py-20 px-6 md:px-12 bg-surface-container-high border-t border-muted-border">
+          <div className="max-w-4xl mx-auto space-y-12">
+            <div className="text-center space-y-3">
+              <span className="font-sans text-xs font-bold text-primary uppercase tracking-[0.4em] block">
+                Sin Letras Pequeñas
+              </span>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-ink-black">
+                Calculadora de Recaudación
+              </h2>
+              <p className="font-body text-sm sm:text-base text-on-surface-variant max-w-xl mx-auto">
+                En Con Amor cobramos una comisión fija transparente del 8% que cubre el procesamiento de pagos bancarios con Stripe, hosting seguro y soporte para tus invitados.
               </p>
-              <div className="pt-2 flex items-center gap-1.5 text-xs text-rose-700 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-rose-600" />
-                <span>Validación biométrica e IA</span>
-              </div>
             </div>
 
-            {/* Card 2 */}
-            <div className="bg-white p-6 rounded-2xl border border-stone-200/90 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-                <Building2 className="w-5 h-5" />
+            <div className="bg-white p-8 sm:p-12 rounded-3xl border border-muted-border shadow-lg space-y-8">
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <label className="font-sans text-xs uppercase tracking-wider font-bold text-ink-black">
+                    Monto estimado en regalos
+                  </label>
+                  <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
+                    ${calculatorBudget.toLocaleString("es-MX")} MXN
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="5000"
+                  max="300000"
+                  step="5000"
+                  value={calculatorBudget}
+                  onChange={(e) => setCalculatorBudget(Number(e.target.value))}
+                  className="w-full accent-primary h-2 bg-surface-container rounded-lg cursor-pointer"
+                />
+                <div className="flex justify-between text-[11px] font-sans text-on-surface-variant mt-2">
+                  <span>$5,000 MXN</span>
+                  <span>$150,000 MXN</span>
+                  <span>$300,000+ MXN</span>
+                </div>
               </div>
-              <h3 className="text-base font-semibold text-stone-900">
-                RFC & CURP
-              </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Captura del <strong>Registro Federal de Contribuyentes con homoclave</strong> y <strong>CURP</strong> para el cumplimiento de retenciones fiscales mexicanas.
-              </p>
-              <div className="pt-2 flex items-center gap-1.5 text-xs text-rose-700 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-rose-600" />
-                <span>Persona Física / Individual</span>
-              </div>
-            </div>
 
-            {/* Card 3 */}
-            <div className="bg-white p-6 rounded-2xl border border-stone-200/90 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-                <CreditCard className="w-5 h-5" />
-              </div>
-              <h3 className="text-base font-semibold text-stone-900">
-                CLABE Interbancaria (SPEI)
-              </h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Asociación de la <strong>CLABE de 18 dígitos</strong> de cualquier banco en México (BBVA, Santander, Banorte, Nu, etc.) para dispersión directa.
-              </p>
-              <div className="pt-2 flex items-center gap-1.5 text-xs text-rose-700 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-rose-600" />
-                <span>Transferencias automáticas vía SPEI</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-muted-border">
+                <div className="bg-surface-container-low p-6 rounded-2xl">
+                  <span className="font-sans text-xs uppercase tracking-wider text-on-surface-variant block mb-1">
+                    Comisión Con Amor (8%)
+                  </span>
+                  <span className="font-serif text-2xl font-bold text-secondary">
+                    ${commissionFee.toLocaleString("es-MX")} MXN
+                  </span>
+                  <p className="text-[11px] font-body text-on-surface-variant mt-2">
+                    Incluye pasarela de pago Stripe, infraestructura y soporte concierge.
+                  </p>
+                </div>
+
+                <div className="bg-primary text-white p-6 rounded-2xl shadow-md">
+                  <span className="font-sans text-xs uppercase tracking-wider text-accent-gold block mb-1">
+                    Recibes en tu Cuenta Bancaria
+                  </span>
+                  <span className="font-serif text-3xl font-bold text-white">
+                    ${(calculatorBudget - commissionFee).toLocaleString("es-MX")} MXN
+                  </span>
+                  <p className="text-[11px] font-body text-white/80 mt-2">
+                    Transferencia directa a tu CLABE interbancaria en México.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Quick Technical Architecture summary for the developer */}
-          <div className="mt-12 bg-stone-900 text-stone-200 rounded-2xl p-6 sm:p-8 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-800 pb-4">
-              <div>
-                <span className="text-xs uppercase tracking-wider font-mono text-rose-400">
-                  Arquitectura Técnica del MVP
-                </span>
-                <h4 className="text-base font-semibold text-white mt-1">
-                  Endpoints y Flujo de Stripe Connect Integrados
-                </h4>
-              </div>
-              <Link
-                href="/dashboard/onboarding"
-                className="inline-flex items-center gap-2 text-xs font-semibold text-rose-400 hover:text-rose-300"
-              >
-                <span>Abrir Onboarding</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+        {/* ============================================================== */}
+        {/* FINAL CALL TO ACTION                                           */}
+        {/* ============================================================== */}
+        <section className="py-24 px-6 md:px-12 text-center bg-surface-container-low relative overflow-hidden">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-4 text-primary">
+              <div className="w-12 h-[1px] bg-primary/40" />
+              <span className="font-sans text-xs uppercase tracking-[0.4em] font-bold">
+                Tu Próximo Gran Capítulo
+              </span>
+              <div className="w-12 h-[1px] bg-primary/40" />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-              <div className="bg-stone-800/80 p-3 rounded-lg border border-stone-700">
-                <code className="text-rose-300 font-mono">POST /api/stripe/create-account</code>
-                <p className="text-stone-400 mt-1 text-[11px]">
-                  Crea la cuenta Express en México con tipo <code>individual</code>, país <code>MX</code> y capacidades <code>card_payments</code> y <code>transfers</code>.
-                </p>
-              </div>
+            <h2 className="font-serif text-4xl sm:text-6xl font-bold text-ink-black leading-tight">
+              Comienza a crear tu evento hoy mismo
+            </h2>
 
-              <div className="bg-stone-800/80 p-3 rounded-lg border border-stone-700">
-                <code className="text-rose-300 font-mono">POST /api/stripe/account-session</code>
-                <p className="text-stone-400 mt-1 text-[11px]">
-                  Genera el <code>client_secret</code> autorizando el componente embebido <code>account_onboarding</code>.
-                </p>
-              </div>
+            <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl mx-auto">
+              Solo toma 2 minutos registrar tu evento y empezar a compartir tu mesa de regalos con todos tus seres queridos.
+            </p>
 
-              <div className="bg-stone-800/80 p-3 rounded-lg border border-stone-700">
-                <code className="text-rose-300 font-mono">POST /api/webhooks/stripe</code>
-                <p className="text-stone-400 mt-1 text-[11px]">
-                  Verifica firma con <code>STRIPE_WEBHOOK_SECRET</code> e inspecciona <code>account.updated</code> (INE, RFC, CURP, estado KYC).
-                </p>
-              </div>
+            <div>
+              <Link
+                href="/crear-evento"
+                className="inline-flex items-center gap-3 px-12 py-5 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.3em] hover:bg-primary-container transition-all shadow-xl hover:shadow-2xl active:scale-95"
+              >
+                <span>Empezar Ahora</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-stone-200 bg-white py-6 text-center text-xs text-stone-500">
-        <p>Con Amor © 2026 — Plataforma de Mesas de Regalos para Bodas en México.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,26 +1,153 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --primary: #870104;
+    --primary-container: #870104;
+    --on-primary: #ffffff;
+    --on-primary-container: #ff8c7d;
+    --secondary: #8c4d41;
+    --secondary-container: #fead9d;
+    --background: #fffbd8;
+    --surface: #fffbd8;
+    --surface-container: #f3efcd;
+    --surface-container-low: #f9f5d3;
+    --surface-container-high: #ede9c8;
+    --surface-container-highest: #e7e4c2;
+    --accent-gold: #9E8C34;
+    --tertiary: #6d5e03;
+    --tertiary-container: #beab4f;
+    --ink-black: #1A1810;
+    --on-surface: #1d1c08;
+    --on-surface-variant: #5a413d;
+    --outline: #8e706c;
+    --outline-variant: #e2beb9;
+    --muted-border: #D9D4B5;
+    --negro-profundo: #000000;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  --color-primary: #870104;
+  --color-primary-container: #870104;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ff8c7d;
+  --color-secondary: #8c4d41;
+  --color-secondary-container: #fead9d;
+  --color-background: #fffbd8;
+  --color-surface: #fffbd8;
+  --color-surface-container: #f3efcd;
+  --color-surface-container-low: #f9f5d3;
+  --color-surface-container-high: #ede9c8;
+  --color-surface-container-highest: #e7e4c2;
+  --color-accent-gold: #9E8C34;
+  --color-tertiary: #6d5e03;
+  --color-tertiary-container: #beab4f;
+  --color-ink-black: #1A1810;
+  --color-on-surface: #1d1c08;
+  --color-on-surface-variant: #5a413d;
+  --color-outline: #8e706c;
+  --color-outline-variant: #e2beb9;
+  --color-muted-border: #D9D4B5;
+  --color-negro-profundo: #000000;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-headline-lg: "Playfair Display", Georgia, serif;
+  --font-headline-md: "Playfair Display", Georgia, serif;
+  --font-display-lg: "Playfair Display", Georgia, serif;
+  --font-body: "Literata", Georgia, serif;
+  --font-body-md: "Literata", Georgia, serif;
+  --font-body-lg: "Literata", Georgia, serif;
+  --font-sans: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-label-md: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-label-sm: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Material Symbols Outlined Icon Styling */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Editorial Frame overlay from Stitch */
+.editorial-frame-overlay, #editorial-frame-overlay, .page-frame {
+  position: fixed;
+  inset: 1rem;
+  border: 1px solid rgba(135, 1, 4, 0.4);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Custom editorial scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #fffbd8;
+}
+::-webkit-scrollbar-thumb {
+  background: #870104;
+  border-radius: 4px;
+}
+
+/* Luxury glass pills */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+
+.navbar-pill {
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px -5px rgba(135, 1, 4, 0.25);
+}
+
+.bento-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.brush-highlight {
+  position: relative;
+  z-index: 1;
+}
+.brush-highlight::after {
+  content: "";
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  bottom: 5%;
+  height: 40%;
+  background-color: #E9D08C;
+  z-index: -1;
+  opacity: 0.65;
+  filter: blur(1px);
+  transform: rotate(-0.5deg);
+  border-radius: 2px;
+}
+
+/* Hairline borders */
+.hairline-border {
+  border: 0.5px solid rgba(135, 1, 4, 0.15);
+}
+.hairline-border-gold {
+  border: 0.5px solid rgba(158, 140, 52, 0.35);
 }
