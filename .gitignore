@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env and agent secrets files
 .env*
+*mcp_config.json
 
 # vercel
 .vercel
