@@ -25,16 +25,18 @@ export default function CommissionCalculator() {
               En Con Amor cobramos una comisión fija transparente del 8% que cubre el procesamiento de pagos bancarios con Stripe, hosting seguro y soporte para tus invitados.
             </p>
 
-            <div className="space-y-7">
+            <div className="space-y-8">
               {/* Slider de Presupuesto */}
-              <div className="relative">
+              <div>
                 <div className="flex justify-between items-baseline mb-3">
-                  <label className="font-sans text-[10px] sm:text-xs uppercase tracking-[0.2em] text-on-surface/70 font-bold">
-                    Monto estimado en regalos
+                  <label className="font-sans text-[11px] uppercase tracking-[0.2em] text-on-surface/60 font-semibold flex-1 min-w-0 pr-4">
+                    Monto estimado en regalos (MXN)
                   </label>
-                  <span className="font-serif text-2xl md:text-3xl text-primary font-normal">
-                    ${calculatorBudget.toLocaleString("es-MX")} MXN
-                  </span>
+                  <div className="shrink-0 text-right min-w-[130px]">
+                    <span className="font-serif text-2xl md:text-3xl text-primary font-normal tabular-nums inline-block">
+                      ${calculatorBudget.toLocaleString("es-MX")}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="py-2">
@@ -46,55 +48,46 @@ export default function CommissionCalculator() {
                     value={calculatorBudget}
                     onChange={(e) => setCalculatorBudget(Number(e.target.value))}
                     className="premium-slider cursor-pointer"
+                    aria-label="Monto estimado en regalos"
                   />
                 </div>
 
-                <div className="flex justify-between mt-1 text-[11px] font-sans text-on-surface-variant font-medium">
-                  <span>$10,000 MXN</span>
-                  <span>$500,000+ MXN</span>
+                <div className="flex justify-between mt-1 text-[11px] font-sans text-on-surface-variant/60 font-medium tabular-nums">
+                  <span>$10,000</span>
+                  <span>$500,000+</span>
                 </div>
               </div>
 
-              {/* Detalle de Comisión (Sin borde según lo solicitado) */}
-              <div className="py-2 space-y-4">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-sans text-[11px] uppercase tracking-wider text-on-surface/70 font-semibold">
-                      Comisión Con Amor (8%)
-                    </span>
-                    <span className="font-body text-base md:text-lg font-bold text-on-surface">
-                      ${commissionFee.toLocaleString("es-MX")} MXN
+              {/* Detalle de Comisión (Sin borde, sin textos innecesarios) */}
+              <div className="py-1">
+                <div className="flex justify-between items-center">
+                  <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-on-surface/60 font-semibold flex-1 min-w-0 pr-4">
+                    Comisión Con Amor (8%)
+                  </span>
+                  <div className="shrink-0 text-right min-w-[130px]">
+                    <span className="font-body text-base md:text-lg font-semibold text-on-surface tabular-nums inline-block">
+                      ${commissionFee.toLocaleString("es-MX")}
                     </span>
                   </div>
-                  <p className="text-[11px] font-body text-on-surface-variant mt-0.5">
-                    Incluye pasarela de pago Stripe, infraestructura y soporte concierge.
-                  </p>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="font-sans text-[11px] uppercase tracking-wider text-on-surface/70 font-semibold">
-                    Gestión VIP & Seguridad
-                  </span>
-                  <span className="font-body text-base md:text-lg italic text-on-surface/80">
-                    Incluido
-                  </span>
                 </div>
               </div>
 
               {/* Recibes en tu Cuenta Bancaria (Total) */}
-              <div className="pt-3 border-t border-muted-border/40">
-                <div className="flex justify-between items-end">
-                  <div>
+              <div className="pt-4 border-t border-muted-border/40">
+                <div className="flex justify-between items-end gap-4">
+                  <div className="flex-1 min-w-0">
                     <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-on-surface block">
                       Recibes en tu Cuenta Bancaria
                     </span>
-                    <span className="text-[11px] font-body text-on-surface-variant block mt-1">
+                    <span className="text-[11px] font-body text-on-surface-variant block mt-1.5 leading-relaxed">
                       Transferencia directa a cualquier CLABE interbancaria en México.
                     </span>
                   </div>
-                  <span className="font-serif text-3xl md:text-4xl text-primary font-normal leading-none pl-4 whitespace-nowrap">
-                    ${receivedAmount.toLocaleString("es-MX")} MXN
-                  </span>
+                  <div className="shrink-0 text-right min-w-[150px]">
+                    <span className="font-serif text-3xl md:text-4xl text-primary font-normal leading-none tabular-nums inline-block">
+                      ${receivedAmount.toLocaleString("es-MX")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
