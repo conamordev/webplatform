@@ -140,65 +140,65 @@ export default function HomePage() {
             </div>
           </section>
         ) : (
-          /* SIN SESIÓN: Hero Editorial de lujo con Carrusel */
-          <section className="relative min-h-[95vh] flex items-center justify-center pt-36 pb-24 px-6 md:px-12 bg-negro-profundo text-white overflow-hidden">
-            {/* Background Image Carousel with editorial tint */}
-            <div className="absolute inset-0 z-0">
+          /* SIN SESIÓN: Hero de Inicio (Diseño Stitch Screen 01) */
+          <section className="relative h-screen w-full overflow-hidden bg-negro-profundo">
+            {/* Background Image & Overlay */}
+            <div className="absolute inset-0">
               <img
-                className="w-full h-full object-cover object-center opacity-45 scale-100 animate-pulse duration-1000"
-                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2560&q=85"
-                alt="Con Amor Editorial"
+                className="w-full h-full object-cover object-center"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEya7n3mF4fwXWBS1FKxNiLifJB7MZL0Qh8uCN427N_hpO4RbQDXnzgmJQL9ZFfZUyQ_sve5z_0EVUFYV58PyhEEi5KmHXgH9SYeZCgThfGUW79237bMYZOuemU0BYWbBLMNczPWMff1WCjAcLL0zwV3yagArC7HXNdazkvAAYNcpaf_855JUy5qzTsVnU-5FMsvFy6Bs024obL2TIznYh-zzCmtQsEfWbcN6-8xk_zR0IPAnQk9UNGzArmmww2HYI50RWpJJmWMA"
+                alt="Con Amor Eventos - El arte de celebrar"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-negro-profundo/70 to-negro-profundo/40" />
+              <div className="absolute inset-0 bg-black/30 z-10" />
             </div>
 
-            <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-              <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-accent-gold font-sans text-xs uppercase tracking-[0.3em]">
-                <span className="material-symbols-outlined text-sm text-accent-gold">magic_button</span>
-                <span>Plataforma Mexicana de Regalos & RSVP</span>
+            <div className="relative z-20 h-full flex flex-col justify-between px-8 sm:px-12 md:px-16 lg:px-20 py-24 pb-12 md:pb-16">
+              {/* Top Right: Tagline & CTA */}
+              <div className="flex justify-end items-start w-full mt-16 md:mt-24">
+                <div className="max-w-[320px] flex flex-col items-end gap-6 text-right">
+                  <p className="font-body text-base md:text-lg text-white leading-relaxed drop-shadow-md">
+                    Curaduría de experiencias de lujo y gestión de eventos de alto perfil.
+                  </p>
+                  <Link
+                    href="/crear-evento"
+                    className="bg-white text-primary px-10 py-4 font-sans font-bold text-[11px] uppercase tracking-[0.3em] hover:bg-primary hover:text-white transition-all duration-500 whitespace-nowrap rounded-full flex items-center justify-center shadow-xl active:scale-95"
+                  >
+                    <span>Crear evento</span>
+                    <span className="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
+                  </Link>
+                </div>
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[1.05]">
-                Celebra tu historia, <br />
-                <span className="text-accent-gold italic font-normal">recibe tu amor sin fronteras</span>.
-              </h1>
+              {/* Bottom: Main Title & Exclusive Benefits */}
+              <div className="flex flex-col gap-6 md:gap-8 w-full">
+                <h1 className="font-serif text-[clamp(4.2rem,9.5vw,8.5rem)] text-white italic leading-[0.88] -ml-2 drop-shadow-2xl">
+                  El arte de <br /> celebrar.
+                </h1>
 
-              <p className="font-body text-base sm:text-xl text-white/85 max-w-3xl mx-auto leading-relaxed">
-                Crea un sitio web inolvidable para tu boda o celebración especial. Recibe regalos en efectivo directamente en tu cuenta bancaria de México con transferencias seguras protegidas por Stripe Connect Express.
-              </p>
+                <div className="flex flex-col sm:flex-row sm:items-baseline w-full gap-4">
+                  <div className="shrink-0">
+                    <span className="text-white font-serif italic text-2xl md:text-3xl leading-none drop-shadow">
+                      Beneficios Exclusivos
+                    </span>
+                  </div>
 
-              {/* Call to Actions */}
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  href="/crear-evento"
-                  className="w-full sm:w-auto px-10 py-4 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.25em] hover:bg-primary-container transition-all shadow-xl hover:shadow-2xl active:scale-95 flex items-center justify-center gap-3 border border-white/20"
-                >
-                  <span>Crear Mi Evento Ahora</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </Link>
+                  <div className="h-[0.5px] bg-white/40 flex-grow self-center translate-y-1 hidden sm:block" />
 
-                <Link
-                  href="/evento/boda-sofia-mateo"
-                  className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/15 backdrop-blur-md text-white font-sans text-xs font-bold uppercase tracking-[0.25em] hover:bg-white/25 transition-all border border-white/30 flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-sm">visibility</span>
-                  <span>Ver Demo de Invitado</span>
-                </Link>
-              </div>
-
-              <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-white/60 font-sans tracking-widest uppercase">
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-accent-gold text-base">verified</span>
-                  Verificación Oficial SAT / CNBV
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-accent-gold text-base">lock</span>
-                  Pagos Encriptados por Stripe
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-accent-gold text-base">payments</span>
-                  Retiro a Cualquier CLABE en México
-                </span>
+                  <div className="flex flex-wrap gap-3 shrink-0">
+                    <Link
+                      href="#mesa-de-regalos"
+                      className="glass-pill px-8 py-3 text-white/90 hover:text-white text-[10px] md:text-xs uppercase font-sans font-semibold tracking-widest hover:bg-primary transition-all whitespace-nowrap flex items-center justify-center"
+                    >
+                      Mesa de Regalos
+                    </Link>
+                    <Link
+                      href="#como-crear-evento"
+                      className="glass-pill px-8 py-3 text-white/90 hover:text-white text-[10px] md:text-xs uppercase font-sans font-semibold tracking-widest hover:bg-primary transition-all whitespace-nowrap flex items-center justify-center"
+                    >
+                      Web Personalizada
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </section>

@@ -20,22 +20,19 @@ export default function Navbar() {
         {/* Brand Logo */}
         <Link
           href="/"
-          className="font-serif text-xl md:text-2xl font-bold tracking-tight text-white hover:text-accent-gold transition-colors flex items-center gap-2"
+          className="font-serif text-2xl font-bold tracking-tight text-white hover:text-accent-gold transition-colors whitespace-nowrap"
         >
-          <span>Con Amor</span>
-          <span className="text-[10px] font-sans font-normal uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded-full text-accent-gold hidden sm:inline-block">
-            Eventos
-          </span>
+          Con Amor Eventos
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex gap-6 xl:gap-8 items-center font-sans text-[11px] font-semibold uppercase tracking-widest">
+        <div className="hidden lg:flex gap-6 xl:gap-8 items-center font-sans text-[10px] font-semibold uppercase tracking-widest text-white/90">
           <Link
             href="/crear-evento"
             className={`transition-colors py-1 ${
               pathname === "/crear-evento"
-                ? "text-accent-gold border-b-2 border-accent-gold"
-                : "text-white/90 hover:text-white"
+                ? "text-accent-gold border-b border-accent-gold"
+                : "hover:text-white"
             }`}
           >
             Crear evento
@@ -44,8 +41,8 @@ export default function Navbar() {
             href="/como-crear-evento"
             className={`transition-colors py-1 ${
               pathname === "/como-crear-evento"
-                ? "text-accent-gold border-b-2 border-accent-gold"
-                : "text-white/90 hover:text-white"
+                ? "text-accent-gold border-b border-accent-gold"
+                : "hover:text-white"
             }`}
           >
             Cómo crear evento
@@ -54,23 +51,34 @@ export default function Navbar() {
             href="/buscar-eventos"
             className={`transition-colors py-1 ${
               pathname === "/buscar-eventos"
-                ? "text-accent-gold border-b-2 border-accent-gold"
-                : "text-white/90 hover:text-white"
+                ? "text-accent-gold border-b border-accent-gold"
+                : "hover:text-white"
             }`}
           >
             Buscar evento
           </Link>
 
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <Link
               href="/perfil?tab=eventos"
               className={`transition-colors py-1 ${
                 pathname.includes("/perfil")
-                  ? "text-accent-gold border-b-2 border-accent-gold"
-                  : "text-white/90 hover:text-white"
+                  ? "text-accent-gold border-b border-accent-gold"
+                  : "hover:text-white"
               }`}
             >
               Mis eventos
+            </Link>
+          ) : (
+            <Link
+              href="/contacto"
+              className={`transition-colors py-1 ${
+                pathname === "/contacto"
+                  ? "text-accent-gold border-b border-accent-gold"
+                  : "hover:text-white"
+              }`}
+            >
+              Ayuda/Soporte
             </Link>
           )}
 
@@ -78,11 +86,11 @@ export default function Navbar() {
             href="/contacto"
             className={`transition-colors py-1 ${
               pathname === "/contacto"
-                ? "text-accent-gold border-b-2 border-accent-gold"
-                : "text-white/90 hover:text-white"
+                ? "text-accent-gold border-b border-accent-gold"
+                : "hover:text-white"
             }`}
           >
-            Contacto & Concierge
+            Contacto
           </Link>
         </div>
 
@@ -106,9 +114,9 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               <Link
                 href="/iniciar-sesion"
-                className="bg-white text-primary px-5 sm:px-7 py-2 rounded-full font-sans font-bold text-[11px] uppercase tracking-wider hover:bg-surface-container transition-all shadow-md active:scale-95"
+                className="bg-white text-primary px-8 py-2.5 rounded-full font-sans font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container transition-all shadow-md active:scale-95"
               >
-                Ingresar
+                LOGIN
               </Link>
             </div>
           ) : (

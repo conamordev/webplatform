@@ -86,7 +86,7 @@
 .editorial-frame-overlay, #editorial-frame-overlay, .page-frame {
   position: fixed;
   inset: 1rem;
-  border: 1px solid rgba(135, 1, 4, 0.4);
+  border: 2px solid #870104;
   border-radius: 12px;
   pointer-events: none;
   z-index: 9999;
