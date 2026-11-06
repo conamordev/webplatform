@@ -70,10 +70,10 @@ export default function HowToCreateSection() {
       className="py-24 md:py-[7.5rem] bg-surface relative border-b hairline-border"
       id="como-crear-evento"
     >
-      <div className="px-8 sm:px-12 md:px-16 lg:px-20">
+      <div className="px-4 sm:px-8 md:px-16 lg:px-20">
         <SectionHeader eyebrow="Guía de Inicio" title="Cómo crear tu evento" />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 md:gap-6">
           {/* Pasos 01, 02, 03 */}
           {STEPS_TOP.map((step) => (
             <BentoStepCard key={step.stepNumber} {...step} />
@@ -99,3 +99,4 @@ export default function HowToCreateSection() {
     </section>
   );
 }
+
