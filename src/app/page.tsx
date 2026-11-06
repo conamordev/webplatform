@@ -7,14 +7,11 @@ import Footer from "@/components/Footer";
 import GuestHero from "@/components/home/GuestHero";
 import HowToCreateSection from "@/components/home/HowToCreateSection";
 import EventPreviewsSection from "@/components/home/EventPreviewsSection";
+import CommissionCalculator from "@/components/home/CommissionCalculator";
 import { useAuth } from "@/lib/auth-context";
 
 export default function HomePage() {
   const { isLoggedIn, user, events } = useAuth();
-
-  // Calculator state
-  const [calculatorBudget, setCalculatorBudget] = useState(50000);
-  const commissionFee = Math.round(calculatorBudget * 0.08);
 
   // Active event for logged in countdown
   const upcomingEvent = events[0];
@@ -264,74 +261,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* SECTION: CALCULADORA DE COMISIONES TRANSPARENTES                */}
         {/* ============================================================== */}
-        <section className="py-20 px-6 md:px-12 bg-surface-container-high border-t border-muted-border">
-          <div className="max-w-4xl mx-auto space-y-12">
-            <div className="text-center space-y-3">
-              <span className="font-sans text-xs font-bold text-primary uppercase tracking-[0.4em] block">
-                Sin Letras Pequeñas
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-ink-black">
-                Calculadora de Recaudación
-              </h2>
-              <p className="font-body text-sm sm:text-base text-on-surface-variant max-w-xl mx-auto">
-                En Con Amor cobramos una comisión fija transparente del 8% que cubre el procesamiento de pagos bancarios con Stripe, hosting seguro y soporte para tus invitados.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 sm:p-12 rounded-3xl border border-muted-border shadow-lg space-y-8">
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <label className="font-sans text-xs uppercase tracking-wider font-bold text-ink-black">
-                    Monto estimado en regalos
-                  </label>
-                  <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
-                    ${calculatorBudget.toLocaleString("es-MX")} MXN
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="5000"
-                  max="300000"
-                  step="5000"
-                  value={calculatorBudget}
-                  onChange={(e) => setCalculatorBudget(Number(e.target.value))}
-                  className="w-full accent-primary h-2 bg-surface-container rounded-lg cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] font-sans text-on-surface-variant mt-2">
-                  <span>$5,000 MXN</span>
-                  <span>$150,000 MXN</span>
-                  <span>$300,000+ MXN</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-muted-border">
-                <div className="bg-surface-container-low p-6 rounded-2xl">
-                  <span className="font-sans text-xs uppercase tracking-wider text-on-surface-variant block mb-1">
-                    Comisión Con Amor (8%)
-                  </span>
-                  <span className="font-serif text-2xl font-bold text-secondary">
-                    ${commissionFee.toLocaleString("es-MX")} MXN
-                  </span>
-                  <p className="text-[11px] font-body text-on-surface-variant mt-2">
-                    Incluye pasarela de pago Stripe, infraestructura y soporte concierge.
-                  </p>
-                </div>
-
-                <div className="bg-primary text-white p-6 rounded-2xl shadow-md">
-                  <span className="font-sans text-xs uppercase tracking-wider text-accent-gold block mb-1">
-                    Recibes en tu Cuenta Bancaria
-                  </span>
-                  <span className="font-serif text-3xl font-bold text-white">
-                    ${(calculatorBudget - commissionFee).toLocaleString("es-MX")} MXN
-                  </span>
-                  <p className="text-[11px] font-body text-white/80 mt-2">
-                    Transferencia directa a tu CLABE interbancaria en México.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <CommissionCalculator />
 
         {/* ============================================================== */}
         {/* FINAL CALL TO ACTION                                           */}
