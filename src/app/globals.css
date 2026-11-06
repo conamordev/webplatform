@@ -156,7 +156,12 @@
 
 .navbar-pill {
   border-radius: 9999px;
-  box-shadow: 0 10px 25px -5px rgba(135, 1, 4, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(135, 1, 4, 0.35);
+}
+
+/* System-wide rule: all luxury cards and buttons default to shadow-2xl */
+.card-luxury {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .bento-glass {

@@ -55,7 +55,7 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
               <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
               {/* Contenedor blanco principal con marco dorado interior */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5">
                 {/* Marco dorado interior del contenedor blanco */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none z-20" />
 
@@ -80,7 +80,7 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
                         )}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-widest font-bold border border-white/40 px-6 py-2.5 rounded-full hover:bg-white hover:text-primary transition-all backdrop-blur-xs"
+                        className="inline-flex items-center gap-2 font-sans text-xs uppercase tracking-widest font-bold border border-white/40 px-6 py-2.5 rounded-full hover:bg-white hover:text-primary transition-all backdrop-blur-xs shadow-2xl"
                       >
                         <span>Cómo llegar</span>
                         <span className="material-symbols-outlined text-sm">
@@ -110,7 +110,7 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
               <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
               {/* Contenedor blanco principal con marco dorado interior */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5">
                 {/* Marco dorado interior del contenedor blanco */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none z-20" />
 

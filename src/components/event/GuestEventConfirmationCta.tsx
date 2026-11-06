@@ -21,7 +21,7 @@ export default function GuestEventConfirmationCta({
         <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
         {/* Tarjeta blanca con marco dorado interior */}
-        <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl p-10 sm:p-16 md:p-20 shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+        <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl p-10 sm:p-16 md:p-20 shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5">
           {/* Marco dorado interior */}
           <div className="absolute inset-3 sm:inset-4 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
 
@@ -43,7 +43,7 @@ export default function GuestEventConfirmationCta({
 
             <button
               onClick={onConfirmClick}
-              className="bg-primary text-white px-12 py-4 rounded-full font-sans text-xs uppercase tracking-[0.25em] font-bold hover:bg-primary-container transition-all shadow-xl active:scale-95 cursor-pointer"
+              className="bg-primary text-white px-12 py-4 rounded-full font-sans text-xs uppercase tracking-[0.25em] font-bold hover:bg-primary-container transition-all shadow-2xl active:scale-95 cursor-pointer"
             >
               Confirmar Asistencia
             </button>

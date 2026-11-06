@@ -70,7 +70,7 @@ export default function GuestEventSummary({ event }: GuestEventSummaryProps) {
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
               {/* Tarjeta blanca con altura fija y centrado */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
                 <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
@@ -90,7 +90,7 @@ export default function GuestEventSummary({ event }: GuestEventSummaryProps) {
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
               {/* Tarjeta blanca con altura fija y centrado */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
                 <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function GuestEventSummary({ event }: GuestEventSummaryProps) {
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
               {/* Tarjeta blanca con altura fija y centrado */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
                 <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
@@ -142,7 +142,7 @@ export default function GuestEventSummary({ event }: GuestEventSummaryProps) {
             <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
             {/* Tarjeta blanca cuadrada */}
-            <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl aspect-square flex flex-col items-center justify-center p-8 sm:p-12 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+            <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl aspect-square flex flex-col items-center justify-center p-8 sm:p-12 text-center shadow-2xl transition-transform duration-200 group-hover:-translate-y-0.5">
               {/* Marco dorado interior */}
               <div className="absolute inset-3 sm:inset-4 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
 

@@ -171,7 +171,7 @@ export default function HomePage() {
               {events.map((evt) => (
                 <div
                   key={evt.id}
-                  className="bg-white rounded-3xl overflow-hidden border border-muted-border shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
+                  className="bg-white rounded-3xl overflow-hidden border border-muted-border shadow-2xl hover:shadow-2xl transition-all duration-300 flex flex-col group"
                 >
                   <div className="relative h-56 overflow-hidden">
                     <img
@@ -180,13 +180,13 @@ export default function HomePage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute top-4 left-4">
-                      <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-sans text-[10px] uppercase tracking-widest font-semibold">
+                      <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-sans text-[10px] uppercase tracking-widest font-semibold shadow-2xl">
                         {evt.type}
                       </span>
                     </div>
                     {evt.isHost && (
                       <div className="absolute top-4 right-4">
-                        <span className="px-3 py-1 rounded-full bg-accent-gold text-ink-black font-sans text-[10px] uppercase tracking-widest font-bold">
+                        <span className="px-3 py-1 rounded-full bg-accent-gold text-ink-black font-sans text-[10px] uppercase tracking-widest font-bold shadow-2xl">
                           Anfitrión
                         </span>
                       </div>
@@ -230,13 +230,13 @@ export default function HomePage() {
                     <div className="pt-2 flex items-center gap-2">
                       <Link
                         href={`/evento/${evt.slug}`}
-                        className="flex-1 text-center py-2.5 rounded-xl border border-primary text-primary hover:bg-primary/5 font-sans text-xs uppercase tracking-wider font-semibold transition-all"
+                        className="flex-1 text-center py-2.5 rounded-xl border border-primary text-primary hover:bg-primary/5 font-sans text-xs uppercase tracking-wider font-semibold transition-all shadow-2xl"
                       >
                         Ver Sitio
                       </Link>
                       <Link
                         href={`/evento/${evt.slug}/configuracion`}
-                        className="flex-1 text-center py-2.5 rounded-xl bg-primary text-white hover:bg-primary-container font-sans text-xs uppercase tracking-wider font-semibold transition-all shadow"
+                        className="flex-1 text-center py-2.5 rounded-xl bg-primary text-white hover:bg-primary-container font-sans text-xs uppercase tracking-wider font-semibold transition-all shadow-2xl"
                       >
                         Builder
                       </Link>
@@ -287,7 +287,7 @@ export default function HomePage() {
             <div>
               <Link
                 href="/crear-evento"
-                className="inline-flex items-center gap-3 px-12 py-5 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.3em] hover:bg-primary-container transition-all shadow-xl hover:shadow-2xl active:scale-95"
+                className="inline-flex items-center gap-3 px-12 py-5 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.3em] hover:bg-primary-container transition-all shadow-2xl hover:shadow-2xl active:scale-95"
               >
                 <span>Empezar Ahora</span>
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>

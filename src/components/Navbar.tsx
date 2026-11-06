@@ -114,7 +114,7 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               <Link
                 href="/iniciar-sesion"
-                className="bg-white text-primary px-8 py-2.5 rounded-full font-sans font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container transition-all shadow-md active:scale-95"
+                className="bg-white text-primary px-8 py-2.5 rounded-full font-sans font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container transition-all shadow-2xl active:scale-95"
               >
                 LOGIN
               </Link>
@@ -281,7 +281,7 @@ export default function Navbar() {
               <Link
                 href="/iniciar-sesion"
                 onClick={() => setMenuOpen(false)}
-                className="bg-white text-primary px-6 py-2 rounded-full font-sans font-bold text-xs uppercase"
+                className="bg-white text-primary px-6 py-2 rounded-full font-sans font-bold text-xs uppercase shadow-2xl"
               >
                 Login
               </Link>

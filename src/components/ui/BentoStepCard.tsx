@@ -25,7 +25,7 @@ export default function BentoStepCard({
         fullWidth
           ? "col-span-2 md:col-span-3 h-[230px] sm:h-[340px] md:h-[450px]"
           : "col-span-1 h-[280px] sm:h-[370px] md:h-[450px]"
-      } rounded-xl relative overflow-hidden border-[0.5px] border-primary/20 group ${className}`.trim()}
+      } rounded-xl relative overflow-hidden border-[0.5px] border-primary/20 shadow-2xl group ${className}`.trim()}
     >
       {/* Numeración editorial */}
       <span
