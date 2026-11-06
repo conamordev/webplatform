@@ -37,7 +37,7 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
           <div className="w-24 h-px bg-accent-gold/60" />
         </div>
 
-        {/* Cuadrícula de Dos Columnas */}
+        {/* Cuadrícula de Dos Columnas con Fondos Blancos y Marcos Editoriales */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Tarjeta 1: Sede / Ceremonia y Recepción */}
           <div className="space-y-6">
@@ -50,23 +50,28 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
               </h3>
             </div>
 
-            <div className="editorial-container h-[520px] overflow-hidden group">
-              <div className="layered-lines" />
-              <div className="floating-gold-frame" />
+            <div className="relative group">
+              {/* Marco desplazado detrás (layered line) */}
+              <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
-              <div className="w-full h-full relative z-10 p-3 sm:p-4">
-                <div className="w-full h-full rounded-lg overflow-hidden relative">
+              {/* Contenedor blanco principal con marco dorado interior */}
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+                {/* Marco dorado interior del contenedor blanco */}
+                <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none z-20" />
+
+                {/* Lienzo interior del mapa enmarcado */}
+                <div className="w-full h-full rounded-md overflow-hidden relative border border-stone-200 shadow-sm">
                   <img
                     alt={event.locationName}
                     src={mapImage}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent flex items-end p-6 sm:p-10">
-                    <div className="text-white">
-                      <h4 className="font-serif text-2xl md:text-3xl mb-2 font-normal leading-snug">
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent flex items-end p-6 sm:p-8">
+                    <div className="text-white z-10">
+                      <h4 className="font-serif text-2xl md:text-3xl mb-1.5 font-normal leading-snug">
                         {event.locationName}
                       </h4>
-                      <p className="font-sans text-xs sm:text-sm opacity-90 mb-6 max-w-md">
+                      <p className="font-sans text-xs sm:text-sm opacity-90 mb-5 max-w-md">
                         {event.address}
                       </p>
                       <a
@@ -100,44 +105,51 @@ export default function GuestEventDetails({ event }: GuestEventDetailsProps) {
               </h3>
             </div>
 
-            <div className="editorial-container h-[520px] group">
-              <div className="layered-lines" />
-              <div className="floating-gold-frame" />
+            <div className="relative group">
+              {/* Marco desplazado detrás (layered line) */}
+              <div className="absolute top-3 left-3 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 h-full relative z-10 p-3 sm:p-4 gap-4">
-                {/* Imagen del Dress Code */}
-                <div className="h-60 sm:h-full rounded-lg overflow-hidden border border-muted-border relative">
-                  <img
-                    alt="Referencia Código de Vestimenta"
-                    src={dressCodeImage}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="floating-gold-frame" />
-                </div>
+              {/* Contenedor blanco principal con marco dorado interior */}
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-[550px] p-4 sm:p-5 shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+                {/* Marco dorado interior del contenedor blanco */}
+                <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none z-20" />
 
-                {/* Texto descriptivo */}
-                <div className="flex flex-col justify-center px-4 sm:px-6 py-2 text-center sm:text-left space-y-6">
-                  <h4 className="font-serif text-primary italic text-3xl md:text-4xl font-normal leading-tight">
-                    {dressCodeDetails.styleName || event.dressCode}
-                  </h4>
+                {/* Contenido dividido en 2 columnas: Foto a la izquierda, Texto sobre fondo blanco a la derecha */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 h-full gap-4 relative z-10">
+                  {/* Foto de Vestimenta con su propio marco dorado */}
+                  <div className="h-60 sm:h-full rounded-md overflow-hidden border border-muted-border relative shadow-xs">
+                    <img
+                      alt="Referencia Código de Vestimenta"
+                      src={dressCodeImage}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-2.5 border-2 border-[#E9D08C] rounded-sm pointer-events-none" />
+                  </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <span className="font-sans text-xs uppercase tracking-widest text-accent-gold font-bold block mb-1">
-                        Caballeros
-                      </span>
-                      <p className="font-body text-sm text-on-surface-variant italic leading-relaxed">
-                        {dressCodeDetails.gentlemen}
-                      </p>
-                    </div>
+                  {/* Texto sobre fondo blanco */}
+                  <div className="flex flex-col justify-center px-4 sm:px-6 py-2 text-center sm:text-left space-y-6">
+                    <h4 className="font-serif text-primary italic text-3xl md:text-4xl font-normal leading-tight">
+                      {dressCodeDetails.styleName || event.dressCode}
+                    </h4>
 
-                    <div>
-                      <span className="font-sans text-xs uppercase tracking-widest text-accent-gold font-bold block mb-1">
-                        Damas
-                      </span>
-                      <p className="font-body text-sm text-on-surface-variant italic leading-relaxed">
-                        {dressCodeDetails.ladies}
-                      </p>
+                    <div className="space-y-6">
+                      <div>
+                        <span className="font-sans text-xs uppercase tracking-widest text-accent-gold font-bold block mb-1.5">
+                          Caballeros
+                        </span>
+                        <p className="font-body text-sm text-on-surface-variant italic leading-relaxed">
+                          {dressCodeDetails.gentlemen}
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="font-sans text-xs uppercase tracking-widest text-accent-gold font-bold block mb-1.5">
+                          Damas
+                        </span>
+                        <p className="font-body text-sm text-on-surface-variant italic leading-relaxed">
+                          {dressCodeDetails.ladies}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
