@@ -63,63 +63,63 @@ export default function GuestEventSummary({ event }: GuestEventSummaryProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-start">
         {/* Columna Izquierda: 3 Tarjetas Blancas con Doble Marco & Narrativa */}
         <div className="md:col-span-7 space-y-12">
-          {/* Tres Tarjetas Editoriales con doble marco */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+          {/* Tres Tarjetas Editoriales con doble marco (Mismo Tamaño) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 items-stretch">
             {/* Tarjeta Fecha */}
-            <div className="relative group">
+            <div className="relative group h-full flex flex-col">
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
-              {/* Tarjeta blanca */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl p-8 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+              {/* Tarjeta blanca con altura fija y centrado */}
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
-                <span className="material-symbols-outlined text-primary mb-3 text-2xl">
+                <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
                   calendar_today
                 </span>
-                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1">
+                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1.5">
                   Fecha
                 </span>
-                <span className="font-serif text-primary text-[22px] md:text-[24px] font-normal leading-snug block">
+                <span className="font-serif text-primary text-[20px] md:text-[22px] lg:text-[24px] font-normal leading-snug block">
                   {event.date}
                 </span>
               </div>
             </div>
 
             {/* Tarjeta Ubicación */}
-            <div className="relative group">
+            <div className="relative group h-full flex flex-col">
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
-              {/* Tarjeta blanca */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl p-8 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+              {/* Tarjeta blanca con altura fija y centrado */}
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
-                <span className="material-symbols-outlined text-primary mb-3 text-2xl">
+                <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
                   location_on
                 </span>
-                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1">
+                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1.5">
                   Ubicación
                 </span>
-                <span className="font-serif text-primary text-[22px] md:text-[24px] font-normal leading-snug block">
+                <span className="font-serif text-primary text-[20px] md:text-[22px] lg:text-[24px] font-normal leading-snug block">
                   {event.city}
                 </span>
               </div>
             </div>
 
             {/* Tarjeta Dress Code */}
-            <div className="relative group">
+            <div className="relative group h-full flex flex-col">
               {/* Marco desplazado detrás (layered line) */}
               <div className="absolute top-2.5 left-2.5 w-full h-full border border-primary/20 rounded-xl pointer-events-none z-0" />
-              {/* Tarjeta blanca */}
-              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl p-8 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5">
+              {/* Tarjeta blanca con altura fija y centrado */}
+              <div className="relative z-10 bg-white border border-[#D9D4B5] rounded-xl h-full min-h-[195px] p-6 text-center shadow-xs transition-transform duration-200 group-hover:-translate-y-0.5 flex flex-col items-center justify-center">
                 {/* Marco dorado interior */}
                 <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E9D08C] rounded-lg pointer-events-none" />
-                <span className="material-symbols-outlined text-primary mb-3 text-2xl">
+                <span className="material-symbols-outlined text-primary mb-2 text-2xl h-7 flex items-center justify-center">
                   apparel
                 </span>
-                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1">
+                <span className="font-sans font-semibold text-xs uppercase tracking-widest text-on-surface-variant block mb-1.5">
                   Dress Code
                 </span>
-                <span className="font-serif text-primary text-[22px] md:text-[24px] font-normal leading-snug block">
+                <span className="font-serif text-primary text-[20px] md:text-[22px] lg:text-[24px] font-normal leading-snug block">
                   {event.dressCode}
                 </span>
               </div>
