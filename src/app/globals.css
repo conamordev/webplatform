@@ -98,6 +98,41 @@
   }
 }
 
+.floating-gold-frame {
+  position: absolute;
+  inset: 0.75rem;
+  border: 2px solid #E9D08C;
+  pointer-events: none;
+  z-index: 20;
+  border-radius: 8px;
+}
+
+.layered-lines {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #870104;
+  opacity: 0.12;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+.editorial-container {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #D9D4B5;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editorial-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
 /* Custom editorial scrollbar */
 ::-webkit-scrollbar {
   width: 5px;

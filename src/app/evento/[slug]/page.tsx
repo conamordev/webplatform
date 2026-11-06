@@ -4,6 +4,10 @@ import React, { useState, use, Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useAuth, Gift } from "@/lib/auth-context";
+import GuestEventHero from "@/components/event/GuestEventHero";
+import GuestEventSummary from "@/components/event/GuestEventSummary";
+import GuestEventDetails from "@/components/event/GuestEventDetails";
+import GuestEventConfirmationCta from "@/components/event/GuestEventConfirmationCta";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -111,18 +115,18 @@ function EventoGuestContent({ params }: PageProps) {
     <div className="min-h-screen flex flex-col bg-background text-on-surface relative">
       {/* Floating Pill Guest Navigation Bar (Stitch Screen 15) */}
       <header className="fixed top-4 md:top-8 left-4 md:left-12 right-4 md:right-12 z-[60]">
-        <nav className="navbar-pill flex justify-between items-center w-full px-6 md:px-8 py-3.5 bg-primary text-white backdrop-blur-md shadow-2xl border border-white/10">
+        <nav className="navbar-pill flex justify-between items-center w-full px-6 md:px-8 py-3.5 md:py-4 bg-primary text-white backdrop-blur-md shadow-2xl border border-white/10">
           <Link
             href="/"
-            className="font-serif text-lg md:text-2xl font-bold tracking-tight text-accent-gold uppercase italic"
+            className="font-serif text-lg md:text-2xl font-bold tracking-tighter text-accent-gold uppercase"
           >
-            Con Amor
+            {event.brandTitle || "ALURE WEDDINGS"}
           </Link>
 
           <div className="hidden md:flex gap-6 lg:gap-8 items-center font-sans text-[11px] uppercase tracking-widest font-semibold">
             <button
               onClick={() => setActiveTab("evento")}
-              className={`py-1 transition-colors ${
+              className={`py-1 transition-colors cursor-pointer ${
                 activeTab === "evento"
                   ? "text-accent-gold border-b-2 border-accent-gold"
                   : "text-white/80 hover:text-white"
@@ -132,7 +136,7 @@ function EventoGuestContent({ params }: PageProps) {
             </button>
             <button
               onClick={() => setActiveTab("regalos")}
-              className={`py-1 transition-colors ${
+              className={`py-1 transition-colors cursor-pointer ${
                 activeTab === "regalos"
                   ? "text-accent-gold border-b-2 border-accent-gold"
                   : "text-white/80 hover:text-white"
@@ -142,17 +146,17 @@ function EventoGuestContent({ params }: PageProps) {
             </button>
             <button
               onClick={() => setActiveTab("rsvp")}
-              className={`py-1 transition-colors ${
+              className={`py-1 transition-colors cursor-pointer ${
                 activeTab === "rsvp"
                   ? "text-accent-gold border-b-2 border-accent-gold"
                   : "text-white/80 hover:text-white"
               }`}
             >
-              Confirmar (RSVP)
+              Confirmar Asistencia
             </button>
             <button
               onClick={() => setActiveTab("dedicatorias")}
-              className={`py-1 transition-colors ${
+              className={`py-1 transition-colors cursor-pointer ${
                 activeTab === "dedicatorias"
                   ? "text-accent-gold border-b-2 border-accent-gold"
                   : "text-white/80 hover:text-white"
@@ -167,8 +171,8 @@ function EventoGuestContent({ params }: PageProps) {
               href={`/evento/${event.slug}/configuracion`}
               className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full font-sans text-[11px] uppercase tracking-widest transition-all flex items-center gap-2 border border-white/20"
             >
-              <span className="material-symbols-outlined text-sm">tune</span>
-              <span className="hidden sm:inline">Panel Builder</span>
+              <span className="material-symbols-outlined text-sm">arrow_back</span>
+              <span className="hidden sm:inline">Volver al editor</span>
             </Link>
           </div>
         </nav>
@@ -177,126 +181,36 @@ function EventoGuestContent({ params }: PageProps) {
       {/* Main Content Area */}
       <main className="flex-1">
         {/* ========================================================== */}
-        {/* TAB 1: SECCIÓN EVENTO                                      */}
+        {/* TAB 1: SECCIÓN EVENTO (Diseño Stitch Screen 15)            */}
         {/* ========================================================== */}
         {activeTab === "evento" && (
-          <div className="space-y-24">
-            {/* Hero Full Height */}
-            <section className="relative min-h-[92vh] w-full flex items-center justify-center overflow-hidden bg-negro-profundo text-white">
-              <img
-                src={event.coverImage}
-                alt={event.title}
-                className="w-full h-full object-cover object-center absolute inset-0 opacity-55 scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-black/30" />
+          <div className="space-y-0">
+            {/* Hero Principal */}
+            <GuestEventHero event={event} />
 
-              <div className="relative z-10 text-center px-6 max-w-5xl mx-auto space-y-6 pt-24">
-                <span className="px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-accent-gold font-sans text-xs uppercase tracking-[0.4em] font-semibold border border-white/20">
-                  {event.type}
-                </span>
+            {/* Resumen & Cuenta Regresiva */}
+            <GuestEventSummary event={event} />
 
-                <h1 className="font-serif text-5xl sm:text-7xl md:text-9xl font-bold leading-tight drop-shadow-2xl text-white">
+            {/* Información Esencial & Detalles */}
+            <GuestEventDetails event={event} />
+
+            {/* Confirmación de Asistencia CTA */}
+            <GuestEventConfirmationCta
+              event={event}
+              onConfirmClick={() => setActiveTab("rsvp")}
+            />
+
+            {/* Footer con el nombre de los anfitriones */}
+            <footer className="bg-surface-container py-20 px-6 border-t border-muted-border">
+              <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+                <div className="font-serif text-primary italic text-3xl sm:text-4xl mb-4">
                   {event.hostNames}
-                </h1>
-
-                <p className="font-sans text-xs sm:text-sm uppercase tracking-[0.4em] text-white/90">
-                  {event.date} • {event.city}
+                </div>
+                <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-stone-500">
+                  Con Amor Eventos • Sastrería Digital
                 </p>
-
-                <div className="pt-6 flex flex-wrap justify-center gap-4">
-                  <button
-                    onClick={() => setActiveTab("regalos")}
-                    className="px-8 py-3.5 rounded-full bg-primary text-white font-sans text-xs uppercase tracking-[0.25em] font-bold hover:bg-primary-container shadow-xl active:scale-95"
-                  >
-                    Ver Mesa de Regalos
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("rsvp")}
-                    className="px-8 py-3.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/30 font-sans text-xs uppercase tracking-[0.25em] font-bold hover:bg-white/30 active:scale-95"
-                  >
-                    Confirmar Asistencia
-                  </button>
-                </div>
               </div>
-            </section>
-
-            {/* Event Summary & Details Cards */}
-            <section className="max-w-6xl mx-auto px-6 md:px-12 space-y-16">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div className="p-8 rounded-3xl bg-white border border-muted-border shadow-sm text-center space-y-2">
-                  <span className="material-symbols-outlined text-primary text-3xl">
-                    calendar_today
-                  </span>
-                  <span className="font-sans text-xs uppercase tracking-widest text-on-surface-variant block font-semibold">
-                    Fecha y Hora
-                  </span>
-                  <p className="font-serif text-xl font-bold text-ink-black">{event.date}</p>
-                  <p className="font-sans text-xs text-stone-500">{event.time}</p>
-                </div>
-
-                <div className="p-8 rounded-3xl bg-white border border-muted-border shadow-sm text-center space-y-2">
-                  <span className="material-symbols-outlined text-primary text-3xl">location_on</span>
-                  <span className="font-sans text-xs uppercase tracking-widest text-on-surface-variant block font-semibold">
-                    Ubicación
-                  </span>
-                  <p className="font-serif text-xl font-bold text-ink-black">{event.locationName}</p>
-                  <p className="font-sans text-xs text-stone-500">{event.city}</p>
-                </div>
-
-                <div className="p-8 rounded-3xl bg-white border border-muted-border shadow-sm text-center space-y-2">
-                  <span className="material-symbols-outlined text-primary text-3xl">apparel</span>
-                  <span className="font-sans text-xs uppercase tracking-widest text-on-surface-variant block font-semibold">
-                    Código de Vestimenta
-                  </span>
-                  <p className="font-serif text-xl font-bold text-ink-black">{event.dressCode}</p>
-                  <p className="font-sans text-xs text-stone-500">Dress Code</p>
-                </div>
-              </div>
-
-              {/* Story / Dedication quote */}
-              {event.story && (
-                <div className="p-10 sm:p-14 bg-surface-container-low rounded-3xl border border-muted-border max-w-3xl mx-auto text-center space-y-4">
-                  <span className="material-symbols-outlined text-4xl text-accent-gold">format_quote</span>
-                  <p className="font-serif text-xl sm:text-2xl text-ink-black italic leading-relaxed">
-                    &ldquo;{event.story}&rdquo;
-                  </p>
-                  <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-primary block pt-2">
-                    — Con amor, {event.hostNames}
-                  </span>
-                </div>
-              )}
-
-              {/* Itinerary */}
-              {event.itinerary && event.itinerary.length > 0 && (
-                <div className="space-y-8 max-w-3xl mx-auto">
-                  <div className="text-center space-y-2">
-                    <span className="font-sans text-xs uppercase tracking-[0.3em] font-bold text-primary">
-                      Cronograma
-                    </span>
-                    <h2 className="font-serif text-3xl font-bold text-ink-black">
-                      Itinerario del Día
-                    </h2>
-                  </div>
-
-                  <div className="space-y-4">
-                    {event.itinerary.map((it, idx) => (
-                      <div
-                        key={idx}
-                        className="p-6 bg-white rounded-2xl border border-muted-border flex items-start gap-6 shadow-xs"
-                      >
-                        <span className="font-serif text-lg font-bold text-accent-gold shrink-0 w-24">
-                          {it.time}
-                        </span>
-                        <div>
-                          <h4 className="font-serif text-lg font-bold text-ink-black">{it.title}</h4>
-                          <p className="font-body text-xs text-on-surface-variant mt-1">{it.desc}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
+            </footer>
           </div>
         )}
 

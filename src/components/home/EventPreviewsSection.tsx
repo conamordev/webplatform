@@ -10,7 +10,7 @@ const PREVIEW_CARDS: EventPreviewCardProps[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85",
     imageAlt: "Boda de Ensueño",
-    href: "/evento/boda-sofia-mateo",
+    href: "/evento/boda-erika-jose-luis",
     offsetClassName: "",
   },
   {
@@ -19,7 +19,7 @@ const PREVIEW_CARDS: EventPreviewCardProps[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=85",
     imageAlt: "Networking de Lujo",
-    href: "/evento/baby-shower-valetina",
+    href: "/evento/networking-de-lujo",
     offsetClassName: "sm:mt-24",
   },
   {
@@ -28,7 +28,7 @@ const PREVIEW_CARDS: EventPreviewCardProps[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=85",
     imageAlt: "Evento Privado",
-    href: "/evento/cumpleanos-camila-30",
+    href: "/evento/evento-privado",
     offsetClassName: "lg:mt-48",
   },
 ];
@@ -89,3 +89,4 @@ export default function EventPreviewsSection() {
     </section>
   );
 }
+
