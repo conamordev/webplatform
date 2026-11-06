@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GuestHero from "@/components/home/GuestHero";
 import HowToCreateSection from "@/components/home/HowToCreateSection";
+import EventPreviewsSection from "@/components/home/EventPreviewsSection";
 import { useAuth } from "@/lib/auth-context";
 
 export default function HomePage() {
@@ -256,88 +257,9 @@ export default function HomePage() {
         <HowToCreateSection />
 
         {/* ============================================================== */}
-        {/* SECTION: DEMOS INTERACTIVAS (Plantillas reales)                 */}
+        {/* SECTION: MIRA CÓMO SE VERÍA LA WEB DE TU EVENTO                */}
         {/* ============================================================== */}
-        <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto space-y-16">
-          <div className="text-center max-w-2xl mx-auto space-y-4">
-            <span className="font-sans text-xs font-bold text-primary uppercase tracking-[0.4em] block">
-              Inspiración Editorial
-            </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-on-surface">
-              Plantillas & Demos de Prueba
-            </h2>
-            <p className="font-body text-on-surface-variant text-base sm:text-lg">
-              Explora cómo ven tus invitados el sitio web, la mesa de regalos y el formulario de RSVP en acción.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Boda — Sofía & Mateo",
-                type: "Boda de Destino en San Miguel",
-                image:
-                  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
-                slug: "boda-sofia-mateo",
-                tag: "Boda",
-              },
-              {
-                title: "Baby Shower — Valentina",
-                type: "Celebración Campirana en Jardín",
-                image:
-                  "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=1200&q=80",
-                slug: "baby-shower-valetina",
-                tag: "Baby Shower",
-              },
-              {
-                title: "Cumpleaños — Camila Turns 30",
-                type: "Gala Nocturna Golden Hour",
-                image:
-                  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
-                slug: "cumpleanos-camila-30",
-                tag: "Cumpleaños",
-              },
-            ].map((demo, idx) => (
-              <div
-                key={idx}
-                className="group relative rounded-3xl overflow-hidden border border-muted-border shadow-md bg-white flex flex-col"
-              >
-                <div className="relative h-72 overflow-hidden">
-                  <img
-                    src={demo.image}
-                    alt={demo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white font-sans text-[10px] uppercase tracking-widest font-semibold border border-white/30">
-                      {demo.tag}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <span className="text-[10px] font-sans uppercase tracking-widest text-accent-gold block">
-                      {demo.type}
-                    </span>
-                    <h3 className="font-serif text-2xl font-bold">{demo.title}</h3>
-                  </div>
-                </div>
-
-                <div className="p-6 flex items-center justify-between bg-surface-container-low">
-                  <span className="font-sans text-xs text-on-surface-variant font-medium">
-                    Vista interactiva
-                  </span>
-                  <Link
-                    href={`/evento/${demo.slug}`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-sans text-xs uppercase tracking-widest hover:bg-primary-container transition-all shadow"
-                  >
-                    <span>Ver Plantilla</span>
-                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <EventPreviewsSection />
 
         {/* ============================================================== */}
         {/* SECTION: CALCULADORA DE COMISIONES TRANSPARENTES                */}

@@ -82,14 +82,20 @@
   vertical-align: middle;
 }
 
-/* Editorial Frame overlay from Stitch */
+/* Editorial Frame overlay from Stitch (6px on mobile, 1rem on md+) */
 .editorial-frame-overlay, #editorial-frame-overlay, .page-frame {
   position: fixed;
-  inset: 1rem;
+  inset: 6px;
   border: 2px solid #870104;
   border-radius: 12px;
   pointer-events: none;
   z-index: 9999;
+}
+
+@media (min-width: 768px) {
+  .editorial-frame-overlay, #editorial-frame-overlay, .page-frame {
+    inset: 1rem;
+  }
 }
 
 /* Custom editorial scrollbar */
@@ -132,16 +138,19 @@
 .brush-highlight::after {
   content: "";
   position: absolute;
-  left: -4%;
-  right: -4%;
-  bottom: 5%;
-  height: 40%;
+  left: -5%;
+  right: -5%;
+  bottom: 0%;
+  height: 45%;
   background-color: #E9D08C;
   z-index: -1;
-  opacity: 0.65;
+  opacity: 0.6;
   filter: blur(1px);
+  clip-path: polygon(
+    2% 20%, 5% 10%, 15% 15%, 25% 5%, 35% 12%, 45% 3%, 55% 10%, 65% 5%, 75% 14%, 85% 2%, 98% 15%,
+    100% 85%, 92% 95%, 82% 88%, 72% 98%, 62% 90%, 52% 96%, 42% 87%, 32% 94%, 22% 85%, 10% 98%, 0% 80%
+  );
   transform: rotate(-0.5deg);
-  border-radius: 2px;
 }
 
 /* Hairline borders */
