@@ -8,6 +8,7 @@ import GuestHero from "@/components/home/GuestHero";
 import HowToCreateSection from "@/components/home/HowToCreateSection";
 import EventPreviewsSection from "@/components/home/EventPreviewsSection";
 import CommissionCalculator from "@/components/home/CommissionCalculator";
+import FinalCtaSection from "@/components/home/FinalCtaSection";
 import { useAuth } from "@/lib/auth-context";
 
 export default function HomePage() {
@@ -266,35 +267,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* FINAL CALL TO ACTION                                           */}
         {/* ============================================================== */}
-        <section className="py-24 px-6 md:px-12 text-center bg-surface-container-low relative overflow-hidden">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="inline-flex items-center gap-4 text-primary">
-              <div className="w-12 h-[1px] bg-primary/40" />
-              <span className="font-sans text-xs uppercase tracking-[0.4em] font-bold">
-                Tu Próximo Gran Capítulo
-              </span>
-              <div className="w-12 h-[1px] bg-primary/40" />
-            </div>
-
-            <h2 className="font-serif text-4xl sm:text-6xl font-bold text-ink-black leading-tight">
-              Comienza a crear tu evento hoy mismo
-            </h2>
-
-            <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl mx-auto">
-              Solo toma 2 minutos registrar tu evento y empezar a compartir tu mesa de regalos con todos tus seres queridos.
-            </p>
-
-            <div>
-              <Link
-                href="/crear-evento"
-                className="inline-flex items-center gap-3 px-12 py-5 rounded-full bg-primary text-white font-sans text-xs font-bold uppercase tracking-[0.3em] hover:bg-primary-container transition-all shadow-2xl hover:shadow-2xl active:scale-95"
-              >
-                <span>Empezar Ahora</span>
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </Link>
-            </div>
-          </div>
-        </section>
+        <FinalCtaSection />
       </main>
 
       <Footer />

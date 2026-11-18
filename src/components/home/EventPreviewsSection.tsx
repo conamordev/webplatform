@@ -79,7 +79,7 @@ export default function EventPreviewsSection() {
           </p>
           <div className="inline-flex items-center gap-4">
             <div className="w-12 h-[1px] bg-primary/30" />
-            <span className="font-sans font-semibold text-[10px] tracking-[0.4em] uppercase text-primary">
+            <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">
               Sastrería Digital
             </span>
             <div className="w-12 h-[1px] bg-primary/30" />

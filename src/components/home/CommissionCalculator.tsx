@@ -10,7 +10,9 @@ export default function CommissionCalculator() {
   return (
     <section className="bg-surface-container-low pt-20 md:pt-28 pb-0" id="calculator-section">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8 md:px-12">
-        <div className="bg-white rounded-t-[28px] sm:rounded-t-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px]">
+        <div style={{
+          boxShadow:'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px 0px 6px 0px inset'
+        }} className="bg-white rounded-t-[28px] sm:rounded-t-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px]">
           {/* Columna Izquierda: Calculadora Interactiva */}
           <div className="w-full md:w-[55%] p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center">
             <span className="font-sans text-[11px] text-primary block mb-4 md:mb-6 uppercase tracking-[0.4em] font-bold">

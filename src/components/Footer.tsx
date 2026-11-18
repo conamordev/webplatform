@@ -4,177 +4,193 @@ import React from "react";
 import Link from "next/link";
 
 export default function Footer() {
+  const handleShare = () => {
+    if (typeof window !== "undefined" && navigator.share) {
+      navigator
+        .share({
+          title: "Con Amor Eventos",
+          text: "Curaduría de experiencias de lujo y gestión de eventos de alto perfil.",
+          url: window.location.href,
+        })
+        .catch(() => {});
+    }
+  };
+
   return (
-    <footer className="bg-primary text-white border-t border-white/10 pt-20 pb-12 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between gap-16 mb-16">
-        {/* Brand column */}
-        <div className="max-w-md">
-          <div className="font-serif text-3xl text-white mb-6 tracking-tight flex items-center gap-2">
-            <span>Con Amor</span>
-            <span className="text-[10px] font-sans font-normal uppercase tracking-widest bg-white/10 px-2 py-0.5 rounded-full text-accent-gold">
-              Eventos
-            </span>
-          </div>
-          <p className="font-body text-white/70 leading-relaxed mb-8 text-xs sm:text-sm">
-            Curaduría de experiencias editoriales de lujo, confirmación de asistencia y gestión de mesas de regalos en México. Pagos protegidos y transferencias bancarias respaldadas por Stripe Connect.
-          </p>
-          <div className="flex gap-6">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-              title="Instagram"
-            >
-              <span className="material-symbols-outlined text-lg">public</span>
-            </a>
-            <a
-              href="mailto:hola@conamor.mx"
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-              title="Email"
-            >
-              <span className="material-symbols-outlined text-lg">mail</span>
-            </a>
+    <footer className="bg-primary text-white border-t border-white/10 mt-auto">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-12">
+        {/* Cuerpo Principal del Footer */}
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-16 mb-16 md:mb-20">
+          {/* Columna Izquierda: Brand & Filosofía */}
+          <div className="max-w-lg">
             <Link
-              href="/contacto"
-              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-              title="Concierge"
+              href="/"
+              className="font-serif text-3xl sm:text-4xl text-white tracking-tight hover:opacity-90 transition-opacity inline-block mb-6"
             >
-              <span className="material-symbols-outlined text-lg">support_agent</span>
+              Con Amor Eventos
             </Link>
+
+            <p className="font-sans text-[11px] sm:text-xs text-white/80 uppercase tracking-[0.2em] sm:tracking-[0.25em] leading-relaxed mb-8">
+              Curaduría de experiencias de lujo y gestión de eventos de alto perfil.
+              Transformando visiones en realidades tangibles desde un enfoque editorial.
+            </p>
+
+            {/* Iconos Minimalistas idénticos al diseño */}
+            <div className="flex items-center gap-6 text-white/80">
+              <a
+                href="/"
+                className="hover:text-white transition-colors"
+                title="Sitio Web"
+                aria-label="Sitio Web"
+              >
+                <span className="material-symbols-outlined text-xl">language</span>
+              </a>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="hover:text-white transition-colors cursor-pointer"
+                title="Compartir"
+                aria-label="Compartir"
+              >
+                <span className="material-symbols-outlined text-xl">share</span>
+              </button>
+              <a
+                href="mailto:contacto@conamor.com"
+                className="hover:text-white transition-colors"
+                title="Correo Electrónico"
+                aria-label="Correo Electrónico"
+              >
+                <span className="material-symbols-outlined text-xl">mail</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Columnas Derechas: Enlaces de Plataforma, Legal y Soporte (Sin KYC) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12 md:gap-16 w-full lg:w-auto">
+            {/* Columna Plataforma */}
+            <div>
+              <span className="font-sans text-[11px] font-semibold text-white/70 mb-5 block uppercase tracking-[0.25em]">
+                Plataforma
+              </span>
+              <ul className="space-y-3.5 font-sans text-[11px] uppercase tracking-[0.2em] text-white/85">
+                <li>
+                  <Link
+                    href="/crear-evento"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Crear Evento
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/como-crear-evento"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Cómo Funciona
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/buscar-eventos"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Buscar Evento
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/evento/boda-erika-jose-luis"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Demo
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Columna Legal */}
+            <div>
+              <span className="font-sans text-[11px] font-semibold text-white/70 mb-5 block uppercase tracking-[0.25em]">
+                Legal
+              </span>
+              <ul className="space-y-3.5 font-sans text-[11px] uppercase tracking-[0.2em] text-white/85">
+                <li>
+                  <Link
+                    href="/aviso-legal#privacidad"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Privacidad
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/aviso-legal#terminos"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Términos
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/aviso-legal#privacidad"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Cookies
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/aviso-legal#tarifas"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Tarifas
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Columna Soporte */}
+            <div className="col-span-2 sm:col-span-1">
+              <span className="font-sans text-[11px] font-semibold text-white/70 mb-5 block uppercase tracking-[0.25em]">
+                Soporte
+              </span>
+              <ul className="space-y-3.5 font-sans text-[11px] uppercase tracking-[0.2em] text-white/85">
+                <li>
+                  <Link
+                    href="/contacto"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Ayuda
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contacto#faq"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Preguntas
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contacto"
+                    className="hover:text-white transition-colors block"
+                  >
+                    Contacto
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Link columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-16">
-          <div>
-            <span className="font-sans text-[11px] font-bold text-accent-gold mb-6 block uppercase tracking-[0.25em]">
-              Plataforma
-            </span>
-            <ul className="space-y-4">
-              <li>
-                <Link
-                  href="/crear-evento"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Crear Evento
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/como-crear-evento"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Cómo Funciona
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/buscar-eventos"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Buscar Evento
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/evento/boda-sofia-mateo"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Demo de Invitado
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <span className="font-sans text-[11px] font-bold text-accent-gold mb-6 block uppercase tracking-[0.25em]">
-              Legal & Tarifas
-            </span>
-            <ul className="space-y-4">
-              <li>
-                <Link
-                  href="/aviso-legal"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Aviso Legal
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/aviso-legal#terminos"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Términos y Condiciones
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/aviso-legal#privacidad"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Privacidad & Cookies
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/aviso-legal#tarifas"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Comisiones Transparentes
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="col-span-2 sm:col-span-1">
-            <span className="font-sans text-[11px] font-bold text-accent-gold mb-6 block uppercase tracking-[0.25em]">
-              Soporte
-            </span>
-            <ul className="space-y-4">
-              <li>
-                <Link
-                  href="/contacto"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Centro de Ayuda
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contacto#faq"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Preguntas Frecuentes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contacto"
-                  className="font-sans text-xs text-white/70 hover:text-white transition-colors"
-                >
-                  Concierge VIP
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard/onboarding"
-                  className="font-sans text-xs text-accent-gold hover:text-white transition-colors flex items-center gap-1"
-                >
-                  <span>KYC Stripe México</span>
-                  <span className="material-symbols-outlined text-xs">verified</span>
-                </Link>
-              </li>
-            </ul>
-          </div>
+        {/* Barra Inferior Copyright & Editorial */}
+        <div className="pt-8 border-t border-white/15 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white/70 font-sans text-[10px] sm:text-[11px] uppercase tracking-[0.25em]">
+          <span>© 2026 Con Amor Eventos.</span>
+          <span className="italic font-sans text-white/70">
+            Hecho con amor y precisión editorial.
+          </span>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center text-xs text-white/50 font-sans tracking-wider">
-        <span>© 2026 Con Amor Eventos. Todos los derechos reservados.</span>
-        <span className="mt-3 sm:mt-0 italic font-serif text-white/40">
-          Diseñado con curaduría editorial para momentos inolvidables.
-        </span>
       </div>
     </footer>
   );
