@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth, EventData, Gift } from "@/lib/auth-context";
+import ImageUploadDropzone from "@/components/ui/ImageUploadDropzone";
+import ShareEventModal from "@/components/event/ShareEventModal";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -25,6 +27,7 @@ function EventoConfiguracionContent({ params }: PageProps) {
   const [activeTab, setActiveTab] = useState<
     "info" | "hosts" | "detalles" | "estilo" | "regalos" | "invitados"
   >("info");
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   // Form states
   const [title, setTitle] = useState(event.title);
@@ -241,11 +244,11 @@ function EventoConfiguracionContent({ params }: PageProps) {
           {/* Bottom Actions */}
           <div className="pt-6 border-t border-muted-border space-y-3">
             <button
-              onClick={handleCopyLink}
-              className="w-full py-2.5 px-4 rounded-xl bg-surface-container text-primary hover:bg-surface-container-high transition-all text-xs font-sans uppercase tracking-widest font-bold flex items-center justify-center gap-2"
+              onClick={() => setShareModalOpen(true)}
+              className="w-full py-2.5 px-4 rounded-xl bg-surface-container text-primary hover:bg-surface-container-high transition-all text-xs font-sans uppercase tracking-widest font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
             >
               <span className="material-symbols-outlined text-sm">share</span>
-              <span>{copiedLink ? "¡Enlace Copiado!" : "Compartir Evento"}</span>
+              <span>Compartir Evento</span>
             </button>
 
             <Link
@@ -399,32 +402,39 @@ function EventoConfiguracionContent({ params }: PageProps) {
                   />
                 </div>
 
-                {/* Portada */}
-                <div className="space-y-2 pt-4 border-t border-muted-border">
-                  <label className="font-sans text-xs font-semibold text-stone-700 uppercase tracking-wider block">
-                    Foto de Portada Principal
-                  </label>
-                  <div className="relative h-60 rounded-2xl overflow-hidden border border-muted-border">
-                    <img src={coverImage} alt="Portada" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex gap-2 pt-2">
-                    {[
-                      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
-                      "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=1200&q=80",
-                      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
-                      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80",
-                    ].map((img, i) => (
-                      <button
-                        type="button"
-                        key={i}
-                        onClick={() => setCoverImage(img)}
-                        className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                          coverImage === img ? "border-primary scale-105" : "border-transparent opacity-60"
-                        }`}
-                      >
-                        <img src={img} alt="Thumb" className="w-full h-full object-cover" />
-                      </button>
-                    ))}
+                {/* Portada con Cloudinary */}
+                <div className="space-y-3 pt-4 border-t border-muted-border">
+                  <ImageUploadDropzone
+                    value={coverImage}
+                    onChange={(url) => setCoverImage(url || event.coverImage)}
+                    folder="events"
+                    label="Foto de Portada Principal"
+                    helperText="Sube la fotografía de tu evento a Cloudinary o selecciona una plantilla (JPG, PNG máx 10 MB)"
+                    aspectRatio="video"
+                  />
+                  <div>
+                    <span className="font-sans text-[10px] uppercase tracking-wider font-semibold text-stone-500 block mb-1.5">
+                      O selecciona una fotografía curada de catálogo:
+                    </span>
+                    <div className="flex gap-2">
+                      {[
+                        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+                        "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=1200&q=80",
+                        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=1200&q=80",
+                        "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80",
+                      ].map((img, i) => (
+                        <button
+                          type="button"
+                          key={i}
+                          onClick={() => setCoverImage(img)}
+                          className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                            coverImage === img ? "border-primary scale-105" : "border-transparent opacity-60"
+                          }`}
+                        >
+                          <img src={img} alt="Thumb" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -954,6 +964,15 @@ function EventoConfiguracionContent({ params }: PageProps) {
           </div>
         </div>
       )}
+
+      {/* Modal para Compartir Evento y Código QR */}
+      <ShareEventModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        eventTitle={event.title}
+        eventSlug={event.slug}
+        hostNames={event.hostNames}
+      />
 
       <Footer />
     </div>

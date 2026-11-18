@@ -12,14 +12,30 @@ export default function IniciarSesionPage() {
   const { login, loginSocial } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [resetModal, setResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(email || "usuario@conamor.mx");
-    router.push("/perfil");
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await login(email || "usuario@conamor.mx", password);
+      if (res && !res.success) {
+        setError(res.error || "Credenciales incorrectas");
+        setLoading(false);
+        return;
+      }
+      router.push("/perfil");
+    } catch (err: any) {
+      setError(err?.message || "Error al iniciar sesión");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSocial = (provider: "google" | "facebook") => {
@@ -100,6 +116,12 @@ export default function IniciarSesionPage() {
               o con tu correo
             </span>
           </div>
+
+          {error && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs font-sans">
+              {error}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">

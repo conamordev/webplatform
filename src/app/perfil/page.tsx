@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth, UserProfile } from "@/lib/auth-context";
+import ImageUploadDropzone from "@/components/ui/ImageUploadDropzone";
 
 function PerfilContent() {
   const searchParams = useSearchParams();
@@ -444,31 +445,23 @@ function PerfilContent() {
 
                   <div className="sm:col-span-2 space-y-3">
                     <label className="font-sans text-xs font-bold uppercase text-stone-700 block">
-                      Cargar foto o archivo PDF del documento
+                      Cargar foto o comprobante oficial del documento (Cloudinary)
                     </label>
-                    <div
-                      onClick={() => {
-                        setDocFileUploaded(true);
+                    <ImageUploadDropzone
+                      value={formData.documentFileName}
+                      onChange={(url) => {
+                        setDocFileUploaded(Boolean(url));
                         setFormData({
                           ...formData,
-                          documentFileName: "INE_Oficial_Verificada.pdf",
-                          documentValidated: true,
+                          documentFileName: url,
+                          documentValidated: Boolean(url),
                         });
                       }}
-                      className="border-2 border-dashed border-accent-gold/60 rounded-2xl p-8 text-center cursor-pointer hover:bg-surface-container-low transition-all"
-                    >
-                      <span className="material-symbols-outlined text-4xl text-primary mb-2 block">
-                        {docFileUploaded ? "task" : "cloud_upload"}
-                      </span>
-                      <p className="font-serif text-sm font-bold text-ink-black">
-                        {docFileUploaded
-                          ? `Archivo cargado: ${formData.documentFileName || "Documento.pdf"}`
-                          : "Arrastra tu archivo aquí o haz clic para examinar"}
-                      </p>
-                      <p className="text-[10px] font-sans text-stone-400 mt-1">
-                        Formatos permitidos: JPG, PNG, PDF (Máx 5MB)
-                      </p>
-                    </div>
+                      folder="kyc"
+                      label=""
+                      helperText="Sube imagen de tu INE o Pasaporte (JPG o PNG máx 10 MB). Almacenamiento seguro en Cloudinary."
+                      aspectRatio="video"
+                    />
                   </div>
                 </div>
               </div>

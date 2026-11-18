@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export interface Gift {
   id: string;
@@ -104,91 +105,102 @@ interface AuthContextType {
   events: EventData[];
   activeEvent: EventData | null;
   toggleAuth: () => void;
-  login: (email: string) => void;
-  loginSocial: (provider: "google" | "facebook") => void;
-  logout: () => void;
-  updateUser: (data: Partial<UserProfile>) => void;
-  updateBankInfo: (data: Partial<UserProfile["bankInfo"]>) => void;
+  login: (email: string, password?: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (
+    email: string,
+    password: string,
+    metadata?: { name: string; lastName?: string; phone?: string }
+  ) => Promise<{ success: boolean; error?: string }>;
+  loginSocial: (provider: "google" | "facebook") => Promise<void>;
+  logout: () => Promise<void>;
+  updateUser: (data: Partial<UserProfile>) => Promise<void> | void;
+  updateBankInfo: (data: Partial<UserProfile["bankInfo"]>) => Promise<void> | void;
   getEventBySlug: (slug: string) => EventData | undefined;
-  createEvent: (data: Partial<EventData>) => EventData;
-  updateEvent: (slug: string, data: Partial<EventData>) => void;
-  addGiftToEvent: (slug: string, gift: Omit<Gift, "id" | "currentAmount">) => void;
+  createEvent: (data: Partial<EventData>) => Promise<EventData>;
+  updateEvent: (slug: string, data: Partial<EventData>) => Promise<void> | void;
+  addGiftToEvent: (slug: string, gift: Omit<Gift, "id" | "currentAmount">) => Promise<void> | void;
   recordGiftPayment: (
     slug: string,
     giftId: string,
     amount: number,
     dedication?: { name: string; message: string }
-  ) => void;
-  submitRSVP: (slug: string, rsvp: Omit<RSVP, "id" | "createdAt">) => void;
-  submitDedicatoria: (slug: string, dedicatoria: Omit<Dedicatoria, "id" | "createdAt">) => void;
+  ) => Promise<void> | void;
+  submitRSVP: (slug: string, rsvp: Omit<RSVP, "id" | "createdAt">) => Promise<void> | void;
+  submitDedicatoria: (
+    slug: string,
+    dedicatoria: Omit<Dedicatoria, "id" | "createdAt">
+  ) => Promise<void> | void;
 }
 
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Initial baseline mock profile
 const INITIAL_USER: UserProfile = {
-  id: "usr_conamor_01",
+  id: "usr_mock_01",
   name: "Camila",
-  lastName: "Fernández Vega",
-  email: "camila.fernandez@conamor.mx",
-  phone: "+52 55 4912 8301",
+  lastName: "Fernández",
+  email: "camila@conamor.mx",
+  phone: "+52 55 4920 1839",
   nationality: "Mexicana",
   country: "México",
   state: "Ciudad de México",
-  city: "CDMX",
-  address: "Av. Horacio 1520, Polanco",
+  city: "Benito Juárez",
+  address: "Av. Insurgentes Sur 1450, Int. 4B, Col. Del Valle",
   documentType: "ine",
-  documentNumber: "FRVGC89021409H400",
+  documentNumber: "IDMX2084920491",
   documentValidated: true,
   documentFileName: "INE_Camila_Fernandez_Oficial.pdf",
   acceptedTerms: true,
   acceptedPrivacy: true,
   consentDataProcessing: true,
   bankInfo: {
-    holderName: "Camila Fernández Vega",
+    holderName: "Camila Fernández Alcocer",
     bankName: "BBVA México",
     accountType: "debito",
-    accountNumber: "0123 4567 8901",
-    clabe: "0121 8000 1234 5678 90",
+    accountNumber: "•••• 4829",
+    clabe: "012180001234567897",
     stripeConnected: true,
-    stripeAccountId: "acct_1TWJC6LQCRbKkM08",
+    stripeAccountId: "acct_1OuX92K492Lks02",
     stripePayoutsEnabled: true,
   },
 };
 
-const DEFAULT_EVENTS: EventData[] = [
+const INITIAL_EVENTS: EventData[] = [
   {
     id: "evt_01",
     slug: "boda-erika-jose-luis",
-    title: "Boda de Ensueño — Erika & Jose Luis",
+    title: "Boda de Erika & José Luis",
     type: "Boda",
-    brandTitle: "ALURE WEDDINGS",
-    hostNames: "Erika & Jose Luis",
-    coHosts: "Familia Navarro Delgado",
-    date: "30 de Mayo de 2026",
-    time: "18:00 hrs",
-    locationName: "Hacienda Santa Clara",
-    address: "Km 5.5 Carretera a Lagos, León, Guanajuato.",
-    city: "León, México",
+    hostNames: "Erika Alcocer & José Luis Morales",
+    coHosts: "María Morales (Wedding Planner)",
+    brandTitle: "Mesa de Regalos de Alta Costura",
+    date: "14 de Noviembre, 2026",
+    time: "17:30 hrs",
+    locationName: "Hacienda San José Lavista",
+    address: "Carretera San Miguel a Dolores Hidalgo km 10.2",
+    city: "San Miguel de Allende, Guanajuato",
     coverImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB9b9u2-46-pEYf4taMSCS7F08bVOvSYEeuugKJ2KCcgfGHcoydjYVlkSLZZdGOpoS3Sj8fi-q9p_5-AFwE7XbkduItsoMVT8Q1qeR1ez_7PgPjKTJBi1XVyS1mrJzLFynW7zhra3Bk9__4j1vXrwyIkql9bDtC7t2e1aHkJl5nOVhwx042nkV-kE2wMjF_cd8dFAyPBA44YzAhOxIMx-rypWbpUJqN7bnkuUb_QrBIGp5hwG2OCjVdVFF-h7OXoJMEzn69kYgiDtc",
+      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2000&q=85",
     mapImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDWjF4jYpCyEgdh1UGg_YG9vXBwWscYnNV3d4nGIZea7m08NskFjZ1b4mwozfgltxAliF5KpgtybkuyFhNkE-0vV2SjrCwGjJ-KFWWlUokfBFWQAyK7k5YzuaXqg0Kfgh3K_hfcYgutgcC_pQV2fX4gtTTxrhJXa7He9_Kqj81TyTUT6Mrw6Gij16zzgXrlYNbvUYCgFnP7j1NIZ4nf_hx7iquNGNtoX0fH9RAvL4o2ezxQ_aeqQzX2dJveIX6eDi7Ng_ZFHHIqw08",
-    dressCode: "Elegante",
+      "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80",
     dressCodeImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDaimOTr_dIN3vrZ-D1S4rJvW2TEQHFvixOFq839KkNcVZnGvSGVo4m1IbqM42rgTQyvSdE2BZcDEn4UNg_cCz3OlaltylOH67AkGDPJEoPB4Dcm9xcZmvroBZxA9TuaMtp2NnKeDvYXkqgqjl0rd0KvoFkoqH2gHn8yMZX-9dfDqQIFxIq61dp3rQUhc0-PzRaEQhAgRy8U9NZufzcC6j7Y6RRVlyvJe2JGcbNOj9J_zF0zYa_Tf-pnqYUQi7Ox6cMl6Gq_cAQ2YE",
+      "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=1200&q=80",
     dressCodeDetails: {
-      styleName: "Etiqueta Rigurosa",
-      gentlemen: "Smoking o traje oscuro formal con corbata.",
-      ladies: "Vestido largo de gala. Tonos sugeridos: Tierra y Joya.",
+      styleName: "Black Tie & Traje de Etiqueta",
+      ladies: "Vestido largo de noche en tonos cálidos, tierra o pastel.",
+      gentlemen: "Esmoquin o traje oscuro formal con corbata o moño.",
     },
-    countdownTargetDate: "2026-05-30T18:00:00",
-    countdownSubtitle: "Hasta el \"Sí, acepto\"",
+    dressCode: "Black Tie & Traje de Etiqueta",
+    countdownTargetDate: "2026-11-14T17:30:00",
+    countdownSubtitle: "Cuenta regresiva para nuestro gran día",
     story:
-      "Nos complace enormemente invitarles a ser testigos de nuestra unión. Este día marca el comienzo de una nueva aventura, rodeados de la elegancia y el amor de quienes más apreciamos. La celebración se llevará a cabo en el corazón de León, prometiendo ser una velada inolvidable de alta costura, música y romance.",
+      "Nos complace enormemente invitarles a ser testigos de nuestra unión. Este día marca el comienzo de una nueva aventura, rodeados de la elegancia y el amor de quienes más apreciamos. La celebración se llevará a cabo en el corazón de San Miguel de Allende.",
     closingQuote:
-      "\"Que este día sea el fiel reflejo de la belleza que compartimos juntos y el inicio de una eternidad rodeados de vuestro cariño.\"",
+      '"Que este día sea el fiel reflejo de la belleza que compartimos juntos y el inicio de una eternidad."',
     itinerary: [
-      { time: "17:30 hrs", title: "Ceremonia Religiosa", desc: "Capilla de los Olivos" },
+      { time: "17:30 hrs", title: "Ceremonia Religiosa", desc: "Capilla de la Hacienda" },
       { time: "18:45 hrs", title: "Cóctel de Bienvenida", desc: "Jardín Central con cuarteto de cuerdas" },
-      { time: "20:00 hrs", title: "Banquete & Brindis", desc: "Salón Principal Hacienda Santa Clara" },
+      { time: "20:00 hrs", title: "Banquete & Brindis", desc: "Salón Principal" },
       { time: "22:00 hrs", title: "Celebración & Fiesta", desc: "DJ Set & Barra Libre Internacional" },
     ],
     primaryColor: "#8B162B",
@@ -204,242 +216,246 @@ const DEFAULT_EVENTS: EventData[] = [
         currentAmount: 48500,
         isFreeAmount: true,
         image:
-          "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=80",
       },
       {
         id: "gift_02",
-        title: "Cena Romántica en Le Sirenuse",
-        description: "Una velada inolvidable a la luz de las velas frente al mar Mediterráneo.",
+        title: "Cena Degustación en Restaurante Michelin",
+        description: "Experiencia culinaria de 7 tiempos con maridaje de vinos en Florencia.",
         category: "Experiencias",
-        targetPrice: 8500,
-        currentAmount: 8500,
+        targetPrice: 12000,
+        currentAmount: 12000,
         isFreeAmount: false,
         image:
-          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1000&q=80",
       },
       {
         id: "gift_03",
-        title: "Cafetera Espresso Italiana La Marzocco",
-        description: "Para nuestras mañanas juntos disfrutando el mejor café de especialidad.",
+        title: "Juego de Vajilla de Porcelana Francesa",
+        description: "Set artesanal de 24 piezas para nuestras primeras cenas como esposos.",
         category: "Hogar",
-        targetPrice: 38000,
-        currentAmount: 22000,
-        isFreeAmount: true,
+        targetPrice: 24500,
+        currentAmount: 15000,
+        isFreeAmount: false,
         image:
-          "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: "gift_04",
-        title: "Juego de Cava de Vinos Sommelier",
-        description: "Colección curada de vinos de autor y copas Riedel de cristal tallado.",
-        category: "Hogar",
-        targetPrice: 12500,
-        currentAmount: 6250,
-        isFreeAmount: true,
-        image:
-          "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?auto=format&fit=crop&w=1000&q=80",
       },
     ],
     rsvps: [
       {
         id: "rsvp_01",
-        name: "Carlos Mendoza & Mariana Ruiz",
-        email: "carlos.mendoza@gmail.com",
-        phone: "+52 55 9876 5432",
+        name: "Lic. Fernando Garza",
+        email: "f.garza@grupoinversion.mx",
+        phone: "+52 81 8392 0192",
         attending: true,
         guestsCount: 2,
-        dietaryRestrictions: "Mariana es vegetariana",
-        createdAt: "2026-10-15",
+        dietaryRestrictions: "Vegetariano para acompañante",
+        createdAt: "2026-10-12",
       },
       {
         id: "rsvp_02",
-        name: "Valeria Domínguez",
-        email: "valeria.dom@hotmail.com",
-        phone: "+52 81 1234 5678",
+        name: "Dra. Carmen Villalobos",
+        email: "carmen.villa@hospitalmed.com",
+        phone: "+52 55 9301 4920",
         attending: true,
         guestsCount: 1,
-        dietaryRestrictions: "Ninguna",
-        createdAt: "2026-10-18",
+        dietaryRestrictions: "Sin gluten",
+        createdAt: "2026-10-15",
       },
     ],
     dedicatorias: [
       {
         id: "ded_01",
-        authorName: "Carlos & Mariana",
-        message: "¡Los amamos con todo el corazón! Que esta nueva etapa esté llena de bendiciones y momentos inolvidables.",
-        giftTitle: "Fondo de Luna de Miel",
+        authorName: "Sofía & Andrés Mestre",
+        message:
+          "Queridos Erika y José Luis, que su vida juntos esté repleta de instantes tan luminosos como este día. ¡Todo nuestro cariño!",
+        giftTitle: "Fondo de Luna de Miel en la Costa Amalfitana",
         amount: 5000,
-        createdAt: "15 Octubre, 2026",
+        createdAt: "Hace 2 días",
       },
     ],
-  },
-  {
-    id: "evt_02",
-    slug: "networking-de-lujo",
-    title: "Networking de Lujo — Leaders Circle Gala",
-    type: "Networking",
-    brandTitle: "LEADERS CIRCLE",
-    hostNames: "Leaders Circle Summit",
-    coHosts: "Comité Consultivo Ejecutivo",
-    date: "18 de Julio de 2026",
-    time: "19:00 hrs",
-    locationName: "Club de Banqueros de México",
-    address: "16 de Septiembre 27, Centro Histórico, CDMX",
-    city: "Ciudad de México",
-    coverImage:
-      "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2560&q=90",
-    mapImage:
-      "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80",
-    dressCode: "Elegancia Profesional",
-    dressCodeImage:
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
-    dressCodeDetails: {
-      styleName: "Business Formal & Black Tie",
-      gentlemen: "Smoking o traje formal oscuro con corbata de seda sobria.",
-      ladies: "Traje sastre de alta costura o vestido largo de gala en tonos neutros.",
-    },
-    countdownTargetDate: "2026-07-18T19:00:00",
-    countdownSubtitle: "Hasta la Apertura Oficial",
-    story:
-      "Nos complace convocar a la comunidad de fundadores, inversionistas y directivos de la industria a una noche de vinculación estratégica sin precedentes. Un espacio exclusivo donde la visión empresarial y la alta hospitalidad convergen para forjar las alianzas del mañana.",
-    closingQuote:
-      "\"El verdadero poder de una red radica en la autenticidad y excelencia de quienes la construyen.\"",
-    itinerary: [
-      { time: "19:00 hrs", title: "Acreditación & Welcome Cocktail", desc: "Recepción de invitados y fotos en photo opportunity" },
-      { time: "20:00 hrs", title: "Keynote de Apertura", desc: "Perspectivas de Inversión y Capital 2026" },
-      { time: "21:00 hrs", title: "Cena de Gala & Mesas Redondas", desc: "Menú degustación en 4 tiempos por chef estrella Michelin" },
-      { time: "23:00 hrs", title: "Exclusive Networking Lounge", desc: "Música de jazz contemporáneo y cata de destilados premium" },
-    ],
-    primaryColor: "#8B162B",
-    typography: "Playfair Display",
-    isHost: false,
-    gifts: [
-      {
-        id: "gift_201",
-        title: "Fondo de Becas para Jóvenes Emprendedores",
-        description: "Aportación para patrocinar talento emergente en programas de aceleración.",
-        category: "Experiencias",
-        targetPrice: 50000,
-        currentAmount: 32000,
-        isFreeAmount: true,
-        image:
-          "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: "gift_202",
-        title: "Cena Exclusiva de Inversionistas & Speakers",
-        description: "Mesa privada con los ponentes principales en el Salón Fundadores.",
-        category: "Experiencias",
-        targetPrice: 24000,
-        currentAmount: 18000,
-        isFreeAmount: false,
-        image:
-          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-    rsvps: [],
-    dedicatorias: [],
-  },
-  {
-    id: "evt_03",
-    slug: "evento-privado",
-    title: "Evento Privado — Gala Nocturna Golden Hour",
-    type: "Evento Privado",
-    brandTitle: "PRIVATE SOIREE",
-    hostNames: "Gala Privada",
-    coHosts: "Anfitriones & Amigos",
-    date: "24 de Octubre de 2026",
-    time: "20:00 hrs",
-    locationName: "Belmond Casa de Sierra Nevada",
-    address: "Hospicio 35, Zona Centro, San Miguel de Allende, GTO",
-    city: "San Miguel de Allende, GTO",
-    coverImage:
-      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=2560&q=90",
-    mapImage:
-      "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=80",
-    dressCode: "Intimidad y Detalle",
-    dressCodeImage:
-      "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=1200&q=80",
-    dressCodeDetails: {
-      styleName: "Cocktail Chic & Toques Dorados",
-      gentlemen: "Blazer de etiqueta con camisa italiana sin corbata.",
-      ladies: "Vestido midi de diseñador o conjunto sofisticado con toques dorados.",
-    },
-    countdownTargetDate: "2026-10-24T20:00:00",
-    countdownSubtitle: "Hasta la Gran Noche",
-    story:
-      "Una velada íntima reservada para nuestro círculo más cercano. Entre patios coloniales iluminados por candiles, gastronomía de autor y coctelería artesanal, celebraremos los momentos que dan sentido a nuestro camino.",
-    closingQuote:
-      "\"La intimidad compartida con las personas indicadas transforma una noche común en un recuerdo para toda la vida.\"",
-    itinerary: [
-      { time: "20:00 hrs", title: "Cocktail al Atardecer", desc: "Golden hour drinks con vista a las torres de San Miguel" },
-      { time: "21:30 hrs", title: "Cena Íntima a la Luz de las Velas", desc: "Menú de autor y maridaje con vinos de autor" },
-      { time: "23:00 hrs", title: "Música & Brindis", desc: "Brindis con champagne y set de vinilos clásicos" },
-    ],
-    primaryColor: "#9E8C34",
-    typography: "Playfair Display",
-    isHost: true,
-    gifts: [
-      {
-        id: "gift_301",
-        title: "Vuelo en Globo al Amanecer sobre Teotihuacán",
-        description: "Paseo inolvidable con brindis de champagne sobre el valle.",
-        category: "Experiencias",
-        targetPrice: 6500,
-        currentAmount: 6500,
-        isFreeAmount: false,
-        image:
-          "https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?auto=format&fit=crop&w=800&q=80",
-      },
-      {
-        id: "gift_302",
-        title: "Cata Privada de Vinos Reserva en Cava Subterránea",
-        description: "Experiencia sommelier guiada con selección de vinos de guarda.",
-        category: "Experiencias",
-        targetPrice: 12000,
-        currentAmount: 8000,
-        isFreeAmount: true,
-        image:
-          "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80",
-      },
-    ],
-    rsvps: [],
-    dedicatorias: [],
   },
 ];
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
-  const [events, setEvents] = useState<EventData[]>(DEFAULT_EVENTS);
+  const [events, setEvents] = useState<EventData[]>(INITIAL_EVENTS);
 
-  // Load from localStorage if present
+  // Sync session on mount
   useEffect(() => {
-    try {
-      const storedAuth = localStorage.getItem("conamor_auth");
-      if (storedAuth !== null) {
-        setIsLoggedIn(storedAuth === "true");
-      }
-      const storedEvents = localStorage.getItem("conamor_events");
-      if (storedEvents) {
-        const parsed: EventData[] = JSON.parse(storedEvents);
-        if (parsed.some((e) => e.slug === "boda-erika-jose-luis")) {
-          setEvents(parsed);
+    // 1. If Supabase is configured, initialize Supabase Auth listener
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setIsLoggedIn(true);
+          loadSupabaseUserProfile(session.user.id, session.user.email || "");
+          loadSupabaseEvents(session.user.id);
         } else {
-          setEvents(DEFAULT_EVENTS);
-          localStorage.setItem("conamor_events", JSON.stringify(DEFAULT_EVENTS));
+          // Check local storage fallback
+          loadLocalFallback();
         }
-      }
-      const storedUser = localStorage.getItem("conamor_user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch {
-      // LocalStorage unavailable in SSR
+      });
+
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if (session?.user) {
+            setIsLoggedIn(true);
+            await loadSupabaseUserProfile(session.user.id, session.user.email || "");
+            await loadSupabaseEvents(session.user.id);
+          } else if (event === "SIGNED_OUT") {
+            setIsLoggedIn(false);
+            setUser(INITIAL_USER);
+          }
+        }
+      );
+
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    } else {
+      // 2. Fallback to localStorage
+      loadLocalFallback();
     }
   }, []);
+
+  const loadLocalFallback = () => {
+    try {
+      const savedAuth = localStorage.getItem("conamor_auth");
+      if (savedAuth !== null) {
+        setIsLoggedIn(savedAuth === "true");
+      }
+      const savedUser = localStorage.getItem("conamor_user");
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+      const savedEvents = localStorage.getItem("conamor_events");
+      if (savedEvents) {
+        setEvents(JSON.parse(savedEvents));
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  const loadSupabaseUserProfile = async (userId: string, email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (data && !error) {
+        setUser({
+          id: data.id,
+          name: data.name,
+          lastName: data.last_name || "",
+          email: data.email || email,
+          phone: data.phone || "",
+          nationality: data.nationality || "Mexicana",
+          country: data.country || "México",
+          state: data.state || "",
+          city: data.city || "",
+          address: data.address || "",
+          documentType: data.document_type || "ine",
+          documentNumber: data.document_number || "",
+          documentValidated: data.document_validated || false,
+          documentFileName: data.document_url || "",
+          acceptedTerms: data.accepted_terms || true,
+          acceptedPrivacy: data.accepted_privacy || true,
+          consentDataProcessing: data.consent_data_processing || true,
+          bankInfo: {
+            holderName: data.bank_holder_name || "",
+            bankName: data.bank_name || "",
+            accountType: data.bank_account_type || "debito",
+            accountNumber: data.bank_account_number || "",
+            clabe: data.bank_clabe || "",
+            stripeConnected: data.stripe_connected || false,
+            stripeAccountId: data.stripe_account_id || undefined,
+            stripePayoutsEnabled: data.stripe_payouts_enabled || false,
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Error loading Supabase profile:", err);
+    }
+  };
+
+  const loadSupabaseEvents = async (userId: string) => {
+    try {
+      const { data: dbEvents, error } = await supabase
+        .from("events")
+        .select(`
+          *,
+          gifts (*),
+          rsvps (*),
+          dedicatorias (*)
+        `)
+        .eq("user_id", userId);
+
+      if (dbEvents && !error && dbEvents.length > 0) {
+        const formatted: EventData[] = dbEvents.map((e: any) => ({
+          id: e.id,
+          slug: e.slug,
+          title: e.title,
+          type: e.type,
+          hostNames: e.host_names,
+          coHosts: e.co_hosts,
+          brandTitle: e.brand_title,
+          date: e.date,
+          time: e.time,
+          locationName: e.location_name,
+          address: e.address,
+          city: e.city,
+          coverImage: e.cover_image,
+          mapImage: e.map_image,
+          dressCodeImage: e.dress_code_image,
+          dressCodeDetails: e.dress_code_details,
+          countdownTargetDate: e.countdown_target_date,
+          countdownSubtitle: e.countdown_subtitle,
+          closingQuote: e.closing_quote,
+          story: e.story,
+          dressCode: e.dress_code,
+          itinerary: e.itinerary || [],
+          primaryColor: e.primary_color || "#8B162B",
+          typography: e.typography || "Playfair Display",
+          isHost: true,
+          gifts: (e.gifts || []).map((g: any) => ({
+            id: g.id,
+            title: g.title,
+            description: g.description,
+            category: g.category,
+            targetPrice: Number(g.target_price),
+            currentAmount: Number(g.current_amount),
+            isFreeAmount: g.is_free_amount,
+            image: g.image_url,
+          })),
+          rsvps: (e.rsvps || []).map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            email: r.email,
+            phone: r.phone,
+            attending: r.attending,
+            guestsCount: r.guests_count,
+            dietaryRestrictions: r.dietary_restrictions,
+            createdAt: r.created_at,
+          })),
+          dedicatorias: (e.dedicatorias || []).map((d: any) => ({
+            id: d.id,
+            authorName: d.author_name,
+            message: d.message,
+            amount: Number(d.amount),
+            createdAt: d.created_at,
+          })),
+        }));
+
+        setEvents(formatted);
+      }
+    } catch (err) {
+      console.error("Error loading Supabase events:", err);
+    }
+  };
 
   const saveEvents = (updated: EventData[]) => {
     setEvents(updated);
@@ -469,7 +485,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = (email: string) => {
+  const login = async (email: string, password?: string) => {
+    if (isSupabaseConfigured && password) {
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+
+        setIsLoggedIn(true);
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err?.message || "Error al iniciar sesión" };
+      }
+    }
+
+    // Local / Demo mode fallback
     setIsLoggedIn(true);
     setUser((prev) => ({ ...prev, email }));
     try {
@@ -477,9 +512,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
+    return { success: true };
   };
 
-  const loginSocial = (provider: "google" | "facebook") => {
+  const signUp = async (
+    email: string,
+    password: string,
+    metadata?: { name: string; lastName?: string; phone?: string }
+  ) => {
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: metadata?.name || "",
+              last_name: metadata?.lastName || "",
+              phone: metadata?.phone || "",
+            },
+          },
+        });
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+
+        setIsLoggedIn(true);
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err?.message || "Error al registrarse" };
+      }
+    }
+
+    // Local fallback
+    setIsLoggedIn(true);
+    const updated = {
+      ...user,
+      email,
+      name: metadata?.name || user.name,
+      lastName: metadata?.lastName || user.lastName,
+      phone: metadata?.phone || user.phone,
+    };
+    saveUser(updated);
+    try {
+      localStorage.setItem("conamor_auth", "true");
+    } catch {
+      // ignore
+    }
+    return { success: true };
+  };
+
+  const loginSocial = async (provider: "google" | "facebook") => {
+    if (isSupabaseConfigured) {
+      await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: typeof window !== "undefined" ? `${window.location.origin}/perfil` : undefined,
+        },
+      });
+      return;
+    }
+
     setIsLoggedIn(true);
     setUser((prev) => ({
       ...prev,
@@ -492,7 +586,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut();
+    }
     setIsLoggedIn(false);
     try {
       localStorage.setItem("conamor_auth", "false");
@@ -501,12 +598,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateUser = (data: Partial<UserProfile>) => {
+  const updateUser = async (data: Partial<UserProfile>) => {
     const updated = { ...user, ...data };
     saveUser(updated);
+
+    if (isSupabaseConfigured && user.id) {
+      try {
+        await supabase
+          .from("profiles")
+          .update({
+            name: updated.name,
+            last_name: updated.lastName,
+            phone: updated.phone,
+            nationality: updated.nationality,
+            country: updated.country,
+            state: updated.state,
+            city: updated.city,
+            address: updated.address,
+            document_type: updated.documentType,
+            document_number: updated.documentNumber,
+            document_validated: updated.documentValidated,
+            document_url: updated.documentFileName,
+            accepted_terms: updated.acceptedTerms,
+            accepted_privacy: updated.acceptedPrivacy,
+            consent_data_processing: updated.consentDataProcessing,
+          })
+          .eq("id", user.id);
+      } catch (err) {
+        console.error("Error updating profile in Supabase:", err);
+      }
+    }
   };
 
-  const updateBankInfo = (data: Partial<UserProfile["bankInfo"]>) => {
+  const updateBankInfo = async (data: Partial<UserProfile["bankInfo"]>) => {
     const updated = {
       ...user,
       bankInfo: {
@@ -515,6 +639,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
     };
     saveUser(updated);
+
+    if (isSupabaseConfigured && user.id) {
+      try {
+        await supabase
+          .from("profiles")
+          .update({
+            bank_holder_name: updated.bankInfo.holderName,
+            bank_name: updated.bankInfo.bankName,
+            bank_account_type: updated.bankInfo.accountType,
+            bank_account_number: updated.bankInfo.accountNumber,
+            bank_clabe: updated.bankInfo.clabe,
+            stripe_connected: updated.bankInfo.stripeConnected,
+            stripe_account_id: updated.bankInfo.stripeAccountId,
+            stripe_payouts_enabled: updated.bankInfo.stripePayoutsEnabled,
+          })
+          .eq("id", user.id);
+      } catch (err) {
+        console.error("Error updating bank info in Supabase:", err);
+      }
+    }
   };
 
   const getEventBySlug = (slug: string) => {
@@ -533,7 +677,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return events[0];
   };
 
-  const createEvent = (data: Partial<EventData>): EventData => {
+  const createEvent = async (data: Partial<EventData>): Promise<EventData> => {
     const slug = (data.title || "nuevo-evento")
       .toLowerCase()
       .normalize("NFD")
@@ -572,22 +716,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const updated = [newEvent, ...events];
     saveEvents(updated);
+
+    if (isSupabaseConfigured && user.id) {
+      try {
+        const { data: dbEvent } = await supabase
+          .from("events")
+          .insert({
+            user_id: user.id,
+            slug: newEvent.slug,
+            title: newEvent.title,
+            type: newEvent.type,
+            host_names: newEvent.hostNames,
+            co_hosts: newEvent.coHosts,
+            date: newEvent.date,
+            time: newEvent.time,
+            location_name: newEvent.locationName,
+            address: newEvent.address,
+            city: newEvent.city,
+            cover_image: newEvent.coverImage,
+            story: newEvent.story,
+            dress_code: newEvent.dressCode,
+            itinerary: newEvent.itinerary,
+            primary_color: newEvent.primaryColor,
+            typography: newEvent.typography,
+          })
+          .select()
+          .single();
+
+        if (dbEvent) {
+          newEvent.id = dbEvent.id;
+        }
+      } catch (err) {
+        console.error("Error creating event in Supabase:", err);
+      }
+    }
+
     return newEvent;
   };
 
-  const updateEvent = (slug: string, data: Partial<EventData>) => {
+  const updateEvent = async (slug: string, data: Partial<EventData>) => {
     const updated = events.map((e) => (e.slug === slug ? { ...e, ...data } : e));
     saveEvents(updated);
+
+    if (isSupabaseConfigured) {
+      try {
+        await supabase
+          .from("events")
+          .update({
+            title: data.title,
+            type: data.type,
+            host_names: data.hostNames,
+            co_hosts: data.coHosts,
+            date: data.date,
+            time: data.time,
+            location_name: data.locationName,
+            address: data.address,
+            city: data.city,
+            cover_image: data.coverImage,
+            map_image: data.mapImage,
+            dress_code_image: data.dressCodeImage,
+            story: data.story,
+            dress_code: data.dressCode,
+            itinerary: data.itinerary,
+            primary_color: data.primaryColor,
+            typography: data.typography,
+          })
+          .eq("slug", slug);
+      } catch (err) {
+        console.error("Error updating event in Supabase:", err);
+      }
+    }
   };
 
-  const addGiftToEvent = (slug: string, gift: Omit<Gift, "id" | "currentAmount">) => {
+  const addGiftToEvent = async (slug: string, gift: Omit<Gift, "id" | "currentAmount">) => {
+    const targetEvent = events.find((e) => e.slug === slug);
+    const newGift: Gift = {
+      ...gift,
+      id: "gift_" + Date.now(),
+      currentAmount: 0,
+    };
+
     const updated = events.map((e) => {
       if (e.slug === slug) {
-        const newGift: Gift = {
-          ...gift,
-          id: "gift_" + Date.now(),
-          currentAmount: 0,
-        };
         return {
           ...e,
           gifts: [...e.gifts, newGift],
@@ -596,9 +806,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return e;
     });
     saveEvents(updated);
+
+    if (isSupabaseConfigured && targetEvent) {
+      try {
+        await supabase.from("gifts").insert({
+          event_id: targetEvent.id,
+          title: gift.title,
+          description: gift.description,
+          category: gift.category,
+          target_price: gift.targetPrice,
+          current_amount: 0,
+          is_free_amount: gift.isFreeAmount,
+          image_url: gift.image,
+        });
+      } catch (err) {
+        console.error("Error adding gift to Supabase:", err);
+      }
+    }
   };
 
-  const recordGiftPayment = (
+  const recordGiftPayment = async (
     slug: string,
     giftId: string,
     amount: number,
@@ -638,16 +865,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return e;
     });
     saveEvents(updated);
+
+    if (isSupabaseConfigured) {
+      try {
+        const currentGift = events
+          .find((e) => e.slug === slug)
+          ?.gifts.find((g) => g.id === giftId);
+
+        if (currentGift) {
+          await supabase
+            .from("gifts")
+            .update({ current_amount: currentGift.currentAmount + amount })
+            .eq("id", giftId);
+        }
+
+        const targetEvt = events.find((e) => e.slug === slug);
+        if (targetEvt && dedication?.message) {
+          await supabase.from("dedicatorias").insert({
+            event_id: targetEvt.id,
+            gift_id: giftId,
+            author_name: dedication.name || "Invitado con Amor",
+            message: dedication.message,
+            amount: amount,
+          });
+        }
+      } catch (err) {
+        console.error("Error recording payment in Supabase:", err);
+      }
+    }
   };
 
-  const submitRSVP = (slug: string, rsvp: Omit<RSVP, "id" | "createdAt">) => {
+  const submitRSVP = async (slug: string, rsvp: Omit<RSVP, "id" | "createdAt">) => {
+    const newRsvp: RSVP = {
+      ...rsvp,
+      id: "rsvp_" + Date.now(),
+      createdAt: new Date().toISOString().split("T")[0],
+    };
+
     const updated = events.map((e) => {
       if (e.slug === slug) {
-        const newRsvp: RSVP = {
-          ...rsvp,
-          id: "rsvp_" + Date.now(),
-          createdAt: new Date().toISOString().split("T")[0],
-        };
         return {
           ...e,
           rsvps: [newRsvp, ...e.rsvps],
@@ -656,16 +912,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return e;
     });
     saveEvents(updated);
+
+    if (isSupabaseConfigured) {
+      try {
+        const targetEvt = events.find((e) => e.slug === slug);
+        if (targetEvt) {
+          await supabase.from("rsvps").insert({
+            event_id: targetEvt.id,
+            name: rsvp.name,
+            email: rsvp.email,
+            phone: rsvp.phone,
+            attending: rsvp.attending,
+            guests_count: rsvp.guestsCount,
+            dietary_restrictions: rsvp.dietaryRestrictions || "",
+          });
+        }
+      } catch (err) {
+        console.error("Error submitting RSVP in Supabase:", err);
+      }
+    }
   };
 
-  const submitDedicatoria = (slug: string, dedicatoria: Omit<Dedicatoria, "id" | "createdAt">) => {
+  const submitDedicatoria = async (
+    slug: string,
+    dedicatoria: Omit<Dedicatoria, "id" | "createdAt">
+  ) => {
+    const newDed: Dedicatoria = {
+      ...dedicatoria,
+      id: "ded_" + Date.now(),
+      createdAt: "Hoy",
+    };
+
     const updated = events.map((e) => {
       if (e.slug === slug) {
-        const newDed: Dedicatoria = {
-          ...dedicatoria,
-          id: "ded_" + Date.now(),
-          createdAt: "Hoy",
-        };
         return {
           ...e,
           dedicatorias: [newDed, ...e.dedicatorias],
@@ -674,6 +953,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return e;
     });
     saveEvents(updated);
+
+    if (isSupabaseConfigured) {
+      try {
+        const targetEvt = events.find((e) => e.slug === slug);
+        if (targetEvt) {
+          await supabase.from("dedicatorias").insert({
+            event_id: targetEvt.id,
+            author_name: dedicatoria.authorName,
+            message: dedicatoria.message,
+            amount: dedicatoria.amount || 0,
+          });
+        }
+      } catch (err) {
+        console.error("Error submitting dedicatoria to Supabase:", err);
+      }
+    }
   };
 
   const activeEvent = events[0] || null;
@@ -687,6 +982,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         activeEvent,
         toggleAuth,
         login,
+        signUp,
         loginSocial,
         logout,
         updateUser,

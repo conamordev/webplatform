@@ -8,6 +8,7 @@ import GuestEventHero from "@/components/event/GuestEventHero";
 import GuestEventSummary from "@/components/event/GuestEventSummary";
 import GuestEventDetails from "@/components/event/GuestEventDetails";
 import GuestEventConfirmationCta from "@/components/event/GuestEventConfirmationCta";
+import ShareEventModal from "@/components/event/ShareEventModal";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -28,6 +29,7 @@ function EventoGuestContent({ params }: PageProps) {
 
   // Selected gift for detail / payment
   const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const [giftContributionAmount, setGiftContributionAmount] = useState<number>(1000);
   const [checkoutModal, setCheckoutModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer">("card");
@@ -166,7 +168,17 @@ function EventoGuestContent({ params }: PageProps) {
             </button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => setShareModalOpen(true)}
+              className="bg-white/10 hover:bg-white/20 text-white px-3.5 sm:px-4 py-2 rounded-full font-sans text-[11px] uppercase tracking-widest transition-all flex items-center gap-1.5 border border-white/20 cursor-pointer shadow-md"
+              title="Compartir evento e invitar"
+            >
+              <span className="material-symbols-outlined text-sm">share</span>
+              <span className="hidden sm:inline">Compartir</span>
+            </button>
+
             <Link
               href={`/evento/${event.slug}/configuracion`}
               className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full font-sans text-[11px] uppercase tracking-widest transition-all flex items-center gap-2 border border-white/20"
@@ -1033,6 +1045,15 @@ function EventoGuestContent({ params }: PageProps) {
           </div>
         </div>
       )}
+
+      {/* Modal para Compartir Evento y Código QR */}
+      <ShareEventModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        eventTitle={event.title}
+        eventSlug={event.slug}
+        hostNames={event.hostNames}
+      />
     </div>
   );
 }

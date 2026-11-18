@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth, EventData } from "@/lib/auth-context";
+import ImageUploadDropzone from "@/components/ui/ImageUploadDropzone";
 
 function CrearEventoForm() {
   const router = useRouter();
@@ -72,11 +73,11 @@ function CrearEventoForm() {
     setCoverImage(defaultImg);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const newEvent = createEvent({
+    const newEvent = await createEvent({
       title: title || `${type} de ${hostNames || "Nuestra Celebración"}`,
       type,
       hostNames: hostNames || "Anfitriones",
@@ -91,10 +92,8 @@ function CrearEventoForm() {
       coverImage,
     });
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      router.push(`/evento/${newEvent.slug}/configuracion`);
-    }, 600);
+    setIsSubmitting(false);
+    router.push(`/evento/${newEvent.slug}/configuracion`);
   };
 
   return (
@@ -308,7 +307,7 @@ function CrearEventoForm() {
             </div>
           </div>
 
-          {/* 4. Portada del Evento */}
+          {/* 4. Portada del Evento con Cloudinary */}
           <div className="space-y-4 pt-6 border-t border-muted-border">
             <label className="font-sans text-xs uppercase tracking-wider font-bold text-ink-black flex items-center gap-2">
               <span className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px]">
@@ -317,33 +316,43 @@ function CrearEventoForm() {
               <span>Foto de Portada</span>
             </label>
 
-            <div className="relative h-48 rounded-2xl overflow-hidden border border-muted-border">
-              <img src={coverImage} alt="Preview Portada" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <span className="text-white font-sans text-xs uppercase tracking-widest bg-black/50 px-4 py-2 rounded-full border border-white/20">
-                  Vista Previa de Portada
-                </span>
-              </div>
-            </div>
+            <ImageUploadDropzone
+              value={coverImage}
+              onChange={(url) =>
+                setCoverImage(
+                  url ||
+                    "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2000&q=80"
+                )
+              }
+              folder="events"
+              label=""
+              helperText="Sube la foto principal a Cloudinary o selecciona una plantilla (JPG, PNG máx 10 MB)"
+              aspectRatio="video"
+            />
 
-            <div className="flex gap-2">
-              {[
-                "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
-                "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80",
-                "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80",
-                "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
-              ].map((img, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  onClick={() => setCoverImage(img)}
-                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                    coverImage === img ? "border-primary scale-105" : "border-transparent opacity-70"
-                  }`}
-                >
-                  <img src={img} alt="Thumb" className="w-full h-full object-cover" />
-                </button>
-              ))}
+            <div>
+              <span className="font-sans text-[10px] uppercase tracking-wider font-semibold text-stone-500 block mb-1.5">
+                O elige una de nuestras imágenes predeterminadas:
+              </span>
+              <div className="flex gap-2">
+                {[
+                  "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
+                  "https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=800&q=80",
+                  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80",
+                  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80",
+                ].map((img, i) => (
+                  <button
+                    type="button"
+                    key={i}
+                    onClick={() => setCoverImage(img)}
+                    className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                      coverImage === img ? "border-primary scale-105" : "border-transparent opacity-70"
+                    }`}
+                  >
+                    <img src={img} alt="Thumb" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 
 export default function RegistroPage() {
   const router = useRouter();
-  const { login, loginSocial, updateUser } = useAuth();
+  const { signUp, loginSocial } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -23,7 +23,7 @@ export default function RegistroPage() {
   });
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -37,15 +37,16 @@ export default function RegistroPage() {
       return;
     }
 
-    login(form.email);
-    updateUser({
+    const res = await signUp(form.email, form.password, {
       name: form.name,
       lastName: form.lastName,
-      email: form.email,
       phone: form.phone,
-      acceptedTerms: form.acceptedTerms,
-      consentDataProcessing: form.consentDataProcessing,
     });
+
+    if (res && !res.success) {
+      setError(res.error || "Ocurrió un error al registrar la cuenta");
+      return;
+    }
 
     router.push("/crear-evento");
   };
