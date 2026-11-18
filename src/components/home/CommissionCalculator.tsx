@@ -24,7 +24,7 @@ export default function CommissionCalculator() {
             </h2>
 
             <p className="font-body text-sm sm:text-base text-on-surface-variant mb-8 md:mb-10 max-w-md leading-relaxed">
-              En Con Amor cobramos una comisión fija transparente del 8% que cubre el procesamiento de pagos bancarios con Stripe, hosting seguro y soporte para tus invitados.
+              En ConAmor cobramos una comisión fija transparente del 8% que cubre el procesamiento de pagos bancarios con Stripe, hosting seguro y soporte para tus invitados.
             </p>
 
             <div className="space-y-8">
@@ -64,7 +64,7 @@ export default function CommissionCalculator() {
               <div className="py-1">
                 <div className="flex justify-between items-center">
                   <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-on-surface/60 font-semibold flex-1 min-w-0 pr-4">
-                    Comisión Con Amor (8%)
+                    Comisión ConAmor (8%)
                   </span>
                   <div className="shrink-0 text-right min-w-[130px]">
                     <span className="font-body text-base md:text-lg font-semibold text-on-surface tabular-nums inline-block">

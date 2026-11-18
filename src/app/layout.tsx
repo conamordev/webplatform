@@ -1,30 +1,34 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Literata, Libre_Franklin } from "next/font/google";
+import { Playfair_Display, Montserrat, Alex_Brush } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 
+// Tipografía para Títulos (estilo TAN Twinkle)
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
   display: "swap",
 });
 
-const literata = Literata({
-  subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const libreFranklin = Libre_Franklin({
+// Tipografía principal para Textos según Brand Guide (Montserrat)
+const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
+// Tipografía para Detalles según Brand Guide (estilo Bristol)
+const bristol = Alex_Brush({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-script",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Con Amor Eventos | Mesas de Regalos y Experiencias para Bodas en México",
+  title: "ConAmor, | Mesa de Regalos Digital en México",
   description:
-    "Crea un sitio web personalizado para tu evento, recibe confirmaciones de asistencia (RSVP) y gestiona tu mesa de regalos con pagos seguros directos a tu banco con Stripe.",
+    "Una forma más libre de celebrar y compartir lo que realmente importa. Crea tu mesa de regalos digital y recibe aportaciones para tus momentos, sueños y proyectos.",
 };
 
 export default function RootLayout({
@@ -35,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="es-MX"
-      className={`${playfair.variable} ${literata.variable} ${libreFranklin.variable} h-full antialiased`}
+      className={`${playfair.variable} ${montserrat.variable} ${bristol.variable} h-full antialiased`}
     >
       <head>
         <link
@@ -43,7 +47,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         />
       </head>
-      <body className="min-h-full flex flex-col font-body bg-background text-on-surface selection:bg-primary selection:text-white">
+      <body className="min-h-full flex flex-col font-sans bg-background text-on-surface selection:bg-primary selection:text-white">
         <AuthProvider>
           <div className="editorial-frame-overlay" aria-hidden="true" />
           {children}

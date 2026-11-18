@@ -2,65 +2,86 @@
 
 @layer base {
   :root {
-    --primary: #870104;
-    --primary-container: #870104;
+    /* Nueva Paleta Oficial ConAmor */
+    --primary: #8B162B; /* Vino Principal */
+    --primary-container: #721223;
     --on-primary: #ffffff;
-    --on-primary-container: #ff8c7d;
-    --secondary: #8c4d41;
-    --secondary-container: #fead9d;
-    --background: #fffbd8;
-    --surface: #fffbd8;
-    --surface-container: #f3efcd;
-    --surface-container-low: #f9f5d3;
-    --surface-container-high: #ede9c8;
-    --surface-container-highest: #e7e4c2;
-    --accent-gold: #9E8C34;
-    --tertiary: #6d5e03;
-    --tertiary-container: #beab4f;
-    --ink-black: #1A1810;
-    --on-surface: #1d1c08;
-    --on-surface-variant: #5a413d;
-    --outline: #8e706c;
-    --outline-variant: #e2beb9;
-    --muted-border: #D9D4B5;
-    --negro-profundo: #000000;
+    --on-primary-container: #F9F6EE;
+    
+    --vino: #8B162B;
+    --marfil: #F9F6EE; /* Base Marfil */
+    --rosa-petalo: #E7C1C3; /* Secundario Rosa Pétalo */
+    --durazno: #F4A78D; /* Secundario Durazno */
+    --amarillo: #EAD79D; /* Acento Amarillo */
+    --azul-cielo: #BDD5EB; /* Acento Azul Cielo */
+    --verde-salvia: #B8C4AF; /* Acento Verde Salvia */
+
+    --secondary: #F4A78D;
+    --secondary-container: #E7C1C3;
+    --background: #F9F6EE;
+    --surface: #F9F6EE;
+    --surface-container: #F4EFE6;
+    --surface-container-low: #F7F3EB;
+    --surface-container-high: #EFE9DE;
+    --surface-container-highest: #E8E1D4;
+    --accent-gold: #EAD79D;
+    --tertiary: #B8C4AF;
+    --tertiary-container: #BDD5EB;
+    
+    --ink-black: #2B1A1E;
+    --on-surface: #2B1A1E;
+    --on-surface-variant: #69565A;
+    --outline: #8B162B;
+    --outline-variant: #E8DFD3;
+    --muted-border: #E8DFD3;
+    --negro-profundo: #1E1214;
   }
 }
 
 @theme {
-  --color-primary: #870104;
-  --color-primary-container: #870104;
+  --color-primary: #8B162B;
+  --color-primary-container: #721223;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #ff8c7d;
-  --color-secondary: #8c4d41;
-  --color-secondary-container: #fead9d;
-  --color-background: #fffbd8;
-  --color-surface: #fffbd8;
-  --color-surface-container: #f3efcd;
-  --color-surface-container-low: #f9f5d3;
-  --color-surface-container-high: #ede9c8;
-  --color-surface-container-highest: #e7e4c2;
-  --color-accent-gold: #9E8C34;
-  --color-tertiary: #6d5e03;
-  --color-tertiary-container: #beab4f;
-  --color-ink-black: #1A1810;
-  --color-on-surface: #1d1c08;
-  --color-on-surface-variant: #5a413d;
-  --color-outline: #8e706c;
-  --color-outline-variant: #e2beb9;
-  --color-muted-border: #D9D4B5;
-  --color-negro-profundo: #000000;
+  --color-on-primary-container: #F9F6EE;
+  
+  --color-vino: #8B162B;
+  --color-marfil: #F9F6EE;
+  --color-rosa-petalo: #E7C1C3;
+  --color-durazno: #F4A78D;
+  --color-amarillo: #EAD79D;
+  --color-azul-cielo: #BDD5EB;
+  --color-verde-salvia: #B8C4AF;
+  
+  --color-secondary: #F4A78D;
+  --color-secondary-container: #E7C1C3;
+  --color-background: #F9F6EE;
+  --color-surface: #F9F6EE;
+  --color-surface-container: #F4EFE6;
+  --color-surface-container-low: #F7F3EB;
+  --color-surface-container-high: #EFE9DE;
+  --color-surface-container-highest: #E8E1D4;
+  --color-accent-gold: #EAD79D;
+  --color-tertiary: #B8C4AF;
+  --color-tertiary-container: #BDD5EB;
+  --color-ink-black: #2B1A1E;
+  --color-on-surface: #2B1A1E;
+  --color-on-surface-variant: #69565A;
+  --color-outline: #8B162B;
+  --color-outline-variant: #E8DFD3;
+  --color-muted-border: #E8DFD3;
+  --color-negro-profundo: #1E1214;
 
-  --font-serif: "Playfair Display", Georgia, serif;
-  --font-headline-lg: "Playfair Display", Georgia, serif;
-  --font-headline-md: "Playfair Display", Georgia, serif;
-  --font-display-lg: "Playfair Display", Georgia, serif;
-  --font-body: "Literata", Georgia, serif;
-  --font-body-md: "Literata", Georgia, serif;
-  --font-body-lg: "Literata", Georgia, serif;
-  --font-sans: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-label-md: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-label-sm: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-headline-lg: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-headline-md: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-display-lg: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-body: var(--font-sans), "Montserrat", -apple-system, sans-serif;
+  --font-body-md: var(--font-sans), "Montserrat", -apple-system, sans-serif;
+  --font-body-lg: var(--font-sans), "Montserrat", -apple-system, sans-serif;
+  --font-sans: var(--font-sans), "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-label-md: var(--font-sans), "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-label-sm: var(--font-sans), "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-script: var(--font-script), "Alex Brush", cursive;
 }
 
 /* Material Symbols Outlined Icon Styling */
@@ -82,11 +103,11 @@
   vertical-align: middle;
 }
 
-/* Editorial Frame overlay from Stitch (6px on mobile, 1rem on md+) */
+/* Editorial Frame overlay con color Vino elegante (6px on mobile, 1rem on md+) */
 .editorial-frame-overlay, #editorial-frame-overlay, .page-frame {
   position: fixed;
   inset: 6px;
-  border: 2px solid #870104;
+  border: 1.5px solid rgba(139, 22, 43, 0.3);
   border-radius: 12px;
   pointer-events: none;
   z-index: 9999;
@@ -101,7 +122,7 @@
 .floating-gold-frame {
   position: absolute;
   inset: 0.75rem;
-  border: 2px solid #E9D08C;
+  border: 2px solid #EAD79D;
   pointer-events: none;
   z-index: 20;
   border-radius: 8px;
@@ -113,7 +134,7 @@
   left: 10px;
   width: 100%;
   height: 100%;
-  border: 1px solid #870104;
+  border: 1px solid #8B162B;
   opacity: 0.12;
   z-index: -1;
   pointer-events: none;
@@ -123,52 +144,52 @@
 .editorial-container {
   position: relative;
   background-color: #ffffff;
-  border: 1px solid #D9D4B5;
+  border: 1px solid #E8DFD3;
   border-radius: 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .editorial-container:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(139, 22, 43, 0.08);
 }
 
-/* Custom editorial scrollbar */
+/* Custom editorial scrollbar con nueva paleta */
 ::-webkit-scrollbar {
   width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #fffbd8;
+  background: #F9F6EE;
 }
 ::-webkit-scrollbar-thumb {
-  background: #870104;
+  background: #8B162B;
   border-radius: 4px;
 }
 
 /* Luxury glass pills */
 .glass-pill {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 9999px;
 }
 
 .navbar-pill {
   border-radius: 9999px;
-  box-shadow: 0 25px 50px -12px rgba(135, 1, 4, 0.35);
+  box-shadow: 0 20px 45px -10px rgba(139, 22, 43, 0.2);
 }
 
 /* System-wide rule: all luxury cards and buttons default to shadow-2xl */
 .card-luxury {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(43, 26, 30, 0.15);
 }
 
 .bento-glass {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .brush-highlight {
@@ -182,9 +203,9 @@
   right: -5%;
   bottom: 0%;
   height: 45%;
-  background-color: #E9D08C;
+  background-color: #EAD79D;
   z-index: -1;
-  opacity: 0.6;
+  opacity: 0.65;
   filter: blur(1px);
   clip-path: polygon(
     2% 20%, 5% 10%, 15% 15%, 25% 5%, 35% 12%, 45% 3%, 55% 10%, 65% 5%, 75% 14%, 85% 2%, 98% 15%,
@@ -193,12 +214,12 @@
   transform: rotate(-0.5deg);
 }
 
-/* Hairline borders */
+/* Hairline borders con Vino y Acento */
 .hairline-border {
-  border: 0.5px solid rgba(135, 1, 4, 0.15);
+  border: 0.5px solid rgba(139, 22, 43, 0.15);
 }
 .hairline-border-gold {
-  border: 0.5px solid rgba(158, 140, 52, 0.35);
+  border: 0.5px solid rgba(234, 215, 157, 0.7);
 }
 
 /* Premium Slider styling for Commission Calculator */
@@ -220,14 +241,14 @@ input[type=range].premium-slider::-webkit-slider-runnable-track {
   width: 100%;
   height: 1.5px;
   cursor: pointer;
-  background: rgba(135, 1, 4, 0.22);
+  background: rgba(139, 22, 43, 0.2);
   border-radius: 1px;
 }
 input[type=range].premium-slider::-moz-range-track {
   width: 100%;
   height: 1.5px;
   cursor: pointer;
-  background: rgba(135, 1, 4, 0.22);
+  background: rgba(139, 22, 43, 0.2);
   border-radius: 1px;
 }
 input[type=range].premium-slider::-webkit-slider-thumb {
@@ -236,30 +257,60 @@ input[type=range].premium-slider::-webkit-slider-thumb {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background: #870104;
+  background: #8B162B;
   cursor: pointer;
   margin-top: -6.75px;
-  box-shadow: 0 0 10px 1px rgba(135, 1, 4, 0.35);
+  box-shadow: 0 0 10px 1px rgba(139, 22, 43, 0.35);
   border: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 input[type=range].premium-slider:hover::-webkit-slider-thumb,
 input[type=range].premium-slider:active::-webkit-slider-thumb {
   transform: scale(1.15);
-  box-shadow: 0 0 14px 2px rgba(135, 1, 4, 0.45);
+  box-shadow: 0 0 14px 2px rgba(139, 22, 43, 0.45);
 }
 input[type=range].premium-slider::-moz-range-thumb {
   height: 15px;
   width: 15px;
   border-radius: 50%;
-  background: #870104;
+  background: #8B162B;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 10px 1px rgba(135, 1, 4, 0.35);
+  box-shadow: 0 0 10px 1px rgba(139, 22, 43, 0.35);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 input[type=range].premium-slider:hover::-moz-range-thumb,
 input[type=range].premium-slider:active::-moz-range-thumb {
   transform: scale(1.15);
-  box-shadow: 0 0 14px 2px rgba(135, 1, 4, 0.45);
+  box-shadow: 0 0 14px 2px rgba(139, 22, 43, 0.45);
+}
+
+/* Badges de Categoría y Tags según Brand Guide */
+.badge-popular {
+  background-color: #EAD79D;
+  color: #4A3B18;
+}
+.badge-experiencia {
+  background-color: #BDD5EB;
+  color: #1E3752;
+}
+.badge-hogar {
+  background-color: #B8C4AF;
+  color: #293822;
+}
+.badge-futuro {
+  background-color: #E7C1C3;
+  color: #54252B;
+}
+.badge-durazno {
+  background-color: #F4A78D;
+  color: #54251B;
+}
+
+/* Estilo distintivo para la coma de ConAmor, */
+.brand-comma {
+  color: #8B162B;
+  font-family: var(--font-serif);
+  font-style: normal;
+  display: inline-block;
 }

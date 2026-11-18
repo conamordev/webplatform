@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import GuestHero from "@/components/home/GuestHero";
+import CelebrationCategoriesSection from "@/components/home/CelebrationCategoriesSection";
 import HowToCreateSection from "@/components/home/HowToCreateSection";
 import EventPreviewsSection from "@/components/home/EventPreviewsSection";
 import CommissionCalculator from "@/components/home/CommissionCalculator";
@@ -248,6 +249,11 @@ export default function HomePage() {
             </div>
           </section>
         )}
+
+        {/* ============================================================== */}
+        {/* SECTION: CATEGORÍAS Y PILARES DE REGALOS (Brand Guide)         */}
+        {/* ============================================================== */}
+        <CelebrationCategoriesSection />
 
         {/* ============================================================== */}
         {/* SECTION: CÓMO CREAR TU EVENTO (Bento Grid Stitch Screen 01)    */}

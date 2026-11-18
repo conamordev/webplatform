@@ -191,7 +191,7 @@ const DEFAULT_EVENTS: EventData[] = [
       { time: "20:00 hrs", title: "Banquete & Brindis", desc: "Salón Principal Hacienda Santa Clara" },
       { time: "22:00 hrs", title: "Celebración & Fiesta", desc: "DJ Set & Barra Libre Internacional" },
     ],
-    primaryColor: "#870104",
+    primaryColor: "#8B162B",
     typography: "Playfair Display",
     isHost: true,
     gifts: [
@@ -310,7 +310,7 @@ const DEFAULT_EVENTS: EventData[] = [
       { time: "21:00 hrs", title: "Cena de Gala & Mesas Redondas", desc: "Menú degustación en 4 tiempos por chef estrella Michelin" },
       { time: "23:00 hrs", title: "Exclusive Networking Lounge", desc: "Música de jazz contemporáneo y cata de destilados premium" },
     ],
-    primaryColor: "#870104",
+    primaryColor: "#8B162B",
     typography: "Playfair Display",
     isHost: false,
     gifts: [
@@ -562,7 +562,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         { time: "18:00 hrs", title: "Bienvenida", desc: "Recepción de invitados" },
         { time: "19:00 hrs", title: "Cena", desc: "Banquete y brindis" },
       ],
-      primaryColor: data.primaryColor || "#870104",
+      primaryColor: data.primaryColor || "#8B162B",
       typography: data.typography || "Playfair Display",
       isHost: true,
       gifts: data.gifts || [],

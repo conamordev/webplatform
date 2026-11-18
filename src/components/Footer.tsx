@@ -8,8 +8,8 @@ export default function Footer() {
     if (typeof window !== "undefined" && navigator.share) {
       navigator
         .share({
-          title: "Con Amor Eventos",
-          text: "Curaduría de experiencias de lujo y gestión de eventos de alto perfil.",
+          title: "ConAmor, | Mesa de Regalos Digital",
+          text: "Una forma más libre de celebrar y compartir lo que realmente importa.",
           url: window.location.href,
         })
         .catch(() => {});
@@ -25,14 +25,19 @@ export default function Footer() {
           <div className="max-w-lg">
             <Link
               href="/"
-              className="font-serif text-3xl sm:text-4xl text-white tracking-tight hover:opacity-90 transition-opacity inline-block mb-6"
+              className="font-serif text-3xl sm:text-4xl text-white tracking-tight hover:opacity-90 transition-opacity inline-flex items-baseline mb-3"
             >
-              Con Amor Eventos
+              <span>ConAmor</span>
+              <span className="text-durazno font-serif not-italic">,</span>
             </Link>
 
-            <p className="font-sans text-[11px] sm:text-xs text-white/80 uppercase tracking-[0.2em] sm:tracking-[0.25em] leading-relaxed mb-8">
-              Curaduría de experiencias de lujo y gestión de eventos de alto perfil.
-              Transformando visiones en realidades tangibles desde un enfoque editorial.
+            <span className="font-sans text-[10px] text-amarillo uppercase tracking-[0.3em] font-semibold block mb-4">
+              Mesa de Regalos Digital
+            </span>
+
+            <p className="font-sans text-[11px] sm:text-xs text-white/80 uppercase tracking-[0.2em] leading-relaxed mb-8">
+              Una forma más libre de celebrar y compartir lo que realmente importa.
+              Regalos que construyen comienzos.
             </p>
 
             {/* Iconos Minimalistas idénticos al diseño */}
@@ -186,7 +191,7 @@ export default function Footer() {
 
         {/* Barra Inferior Copyright & Editorial */}
         <div className="pt-8 border-t border-white/15 flex flex-col md:flex-row justify-between items-center gap-4 text-white/70 font-sans text-[10px] sm:text-[11px] tracking-[0.2em] text-center md:text-left">
-          <span className="uppercase">© 2026 Con Amor Eventos.</span>
+          <span className="uppercase">© 2026 ConAmor, Mesa de Regalos Digital.</span>
           <a
             href="https://www.blackcherryitconsulting.com/"
             target="_blank"

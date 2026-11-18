@@ -21,10 +21,10 @@ export default function EventPreviewCard({
   return (
     <Link
       href={href}
-      className={`relative block group border-[1.5px] md:border-[2px] rounded-xl overflow-hidden bg-white transition-all duration-500 shadow-2xl hover:shadow-2xl h-fit border-[#E9D08C] ${offsetClassName}`.trim()}
+      className={`relative block group border-[1.5px] md:border-[2px] rounded-xl overflow-hidden bg-white transition-all duration-500 shadow-2xl hover:shadow-2xl h-fit border-amarillo ${offsetClassName}`.trim()}
     >
       {/* Marco interior dorado que se contrae y cambia a primario en hover */}
-      <div className="absolute inset-2.5 sm:inset-3 md:inset-4 rounded-lg z-30 pointer-events-none transition-all duration-700 group-hover:inset-1.5 md:group-hover:inset-2 border md:border-2 border-[#E9D08C]/40 group-hover:border-primary" />
+      <div className="absolute inset-2.5 sm:inset-3 md:inset-4 rounded-lg z-30 pointer-events-none transition-all duration-700 group-hover:inset-1.5 md:group-hover:inset-2 border md:border-2 border-amarillo/40 group-hover:border-primary" />
 
       {/* Imagen: Formato horizontal apaisado (aspect-[2.1/1]) en mobile y vertical (aspect-[3/4.5]) en desktop */}
       <div className="aspect-[2.1/1] sm:aspect-[2.3/1] md:aspect-[3/4.5] overflow-hidden relative w-full h-full">
@@ -48,8 +48,7 @@ export default function EventPreviewCard({
         </div>
 
         <div
-          className="w-8 h-8 md:w-10 md:h-10 shrink-0 backdrop-blur-md rounded-lg flex items-center justify-center text-white transition-all group-hover:bg-primary group-hover:scale-110 shadow-2xl"
-          style={{ backgroundColor: "#E9D08C" }}
+          className="w-8 h-8 md:w-10 md:h-10 shrink-0 backdrop-blur-md rounded-lg flex items-center justify-center text-primary-content transition-all group-hover:bg-primary group-hover:text-white group-hover:scale-110 shadow-2xl bg-amarillo"
         >
           <span className="material-symbols-outlined text-base md:text-xl">north_east</span>
         </div>

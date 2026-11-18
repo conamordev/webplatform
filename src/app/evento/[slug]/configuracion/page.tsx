@@ -113,7 +113,7 @@ function EventoConfiguracionContent({ params }: PageProps) {
 
   // Color palettes from Stitch
   const colorPalettes = [
-    { name: "Borgoña Royal", primary: "#870104", preview: ["#870104", "#ffffff", "#fead9d"] },
+    { name: "Vino ConAmor", primary: "#8B162B", preview: ["#8B162B", "#F9F6EE", "#E7C1C3"] },
     { name: "Terracota Rosé", primary: "#8c4d41", preview: ["#8c4d41", "#ffffff", "#ffdad3"] },
     { name: "Oro Champán", primary: "#9E8C34", preview: ["#9E8C34", "#ffffff", "#f9e381"] },
     { name: "Azul Medianoche", primary: "#1c2e4a", preview: ["#1c2e4a", "#ffffff", "#757ea1"] },
