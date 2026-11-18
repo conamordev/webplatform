@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -11,10 +11,33 @@ export default function Navbar() {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const pathname = usePathname();
 
+  const isHomePage = pathname === "/";
+  const [isPastHero, setIsPastHero] = useState(false);
+
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    const handleScroll = () => {
+      const heroEl = document.getElementById("guest-hero");
+      const threshold = heroEl ? heroEl.offsetHeight - 90 : 600;
+      setIsPastHero(window.scrollY > threshold);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
+
+  // En home page: es completamente sólida en el hero y solo se hace transparente al pasar el hero
+  const navBackgroundClass =
+    isHomePage && isPastHero
+      ? "bg-marfil/80 backdrop-blur-md shadow-xl border-muted-border/70"
+      : "bg-marfil shadow-2xl border-muted-border/90";
+
   return (
     <header className="fixed top-3 md:top-6 left-3 md:left-12 right-3 md:right-12 z-[60]">
       <nav
-        className="navbar-pill flex justify-between items-center w-full px-6 md:px-8 py-3.5 md:py-4 bg-marfil/95 text-on-surface backdrop-blur-md shadow-2xl transition-all duration-500 border border-muted-border/80"
+        className={`navbar-pill flex justify-between items-center w-full px-6 md:px-8 py-3.5 md:py-4 text-on-surface transition-all duration-500 border ${navBackgroundClass}`}
         id="main-nav"
       >
         {/* Brand Logo - Elemento original */}
