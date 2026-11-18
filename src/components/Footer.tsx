@@ -185,9 +185,18 @@ export default function Footer() {
         </div>
 
         {/* Barra Inferior Copyright & Editorial */}
-        <div className="pt-8 border-t border-white/15 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-white/70 font-sans text-[10px] sm:text-[11px] uppercase tracking-[0.25em]">
-          <span>© 2026 Con Amor Eventos.</span>
-          <span className="italic font-sans text-white/70">
+        <div className="pt-8 border-t border-white/15 flex flex-col md:flex-row justify-between items-center gap-4 text-white/70 font-sans text-[10px] sm:text-[11px] tracking-[0.2em] text-center md:text-left">
+          <span className="uppercase">© 2026 Con Amor Eventos.</span>
+          <a
+            href="https://www.blackcherryitconsulting.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/75 hover:text-white transition-colors inline-flex items-center gap-1.5 hover:underline"
+          >
+            <span>Desarrollado por</span>
+            <span className="font-semibold text-white">BlackCherryItConsulting</span>
+          </a>
+          <span className="italic uppercase text-white/70">
             Hecho con amor y precisión editorial.
           </span>
         </div>
