@@ -14,78 +14,93 @@ export default function Navbar() {
   return (
     <header className="fixed top-3 md:top-6 left-3 md:left-12 right-3 md:right-12 z-[60]">
       <nav
-        className="navbar-pill flex justify-between items-center w-full px-5 md:px-8 py-3 md:py-3.5 bg-marfil/95 text-on-surface backdrop-blur-md shadow-lg transition-all duration-500 border border-muted-border/80"
+        className="navbar-pill flex justify-between items-center w-full px-6 md:px-8 py-3.5 md:py-4 bg-marfil/95 text-on-surface backdrop-blur-md shadow-2xl transition-all duration-500 border border-muted-border/80"
         id="main-nav"
       >
-        {/* Brand Logo ConAmor, */}
+        {/* Brand Logo - Elemento original */}
         <Link
           href="/"
-          className="font-serif text-2xl md:text-[26px] font-bold tracking-tight text-primary hover:opacity-90 transition-opacity whitespace-nowrap flex items-baseline"
+          className="font-serif text-2xl font-bold tracking-tight text-primary hover:opacity-90 transition-opacity whitespace-nowrap"
         >
-          <span>ConAmor</span>
-          <span className="text-primary font-serif font-bold text-2xl">,</span>
+          Con Amor Eventos
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex gap-6 xl:gap-8 items-center font-sans text-[11px] font-semibold uppercase tracking-wider text-on-surface/80">
+        {/* Desktop Navigation Links - Elementos originales intactos */}
+        <div className="hidden lg:flex gap-6 xl:gap-8 items-center font-sans text-[10px] font-semibold uppercase tracking-widest text-on-surface/80">
+          <Link
+            href="/crear-evento"
+            className={`transition-colors py-1 hover:text-primary ${
+              pathname === "/crear-evento"
+                ? "text-primary border-b-2 border-primary font-bold"
+                : ""
+            }`}
+          >
+            Crear evento
+          </Link>
           <Link
             href="/como-crear-evento"
             className={`transition-colors py-1 hover:text-primary ${
               pathname === "/como-crear-evento"
-                ? "text-primary border-b-2 border-primary"
+                ? "text-primary border-b-2 border-primary font-bold"
                 : ""
             }`}
           >
-            Cómo funciona
+            Cómo crear evento
           </Link>
           <Link
             href="/buscar-eventos"
             className={`transition-colors py-1 hover:text-primary ${
               pathname === "/buscar-eventos"
-                ? "text-primary border-b-2 border-primary"
+                ? "text-primary border-b-2 border-primary font-bold"
                 : ""
             }`}
           >
-            Celebraciones
-          </Link>
-          <Link
-            href="/#plantillas-demo"
-            className="transition-colors py-1 hover:text-primary"
-          >
-            Inspiración
-          </Link>
-          <Link
-            href="/contacto#faq"
-            className={`transition-colors py-1 hover:text-primary ${
-              pathname === "/contacto"
-                ? "text-primary border-b-2 border-primary"
-                : ""
-            }`}
-          >
-            Preguntas
+            Buscar evento
           </Link>
 
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <Link
               href="/perfil?tab=eventos"
               className={`transition-colors py-1 hover:text-primary ${
                 pathname.includes("/perfil")
-                  ? "text-primary border-b-2 border-primary"
+                  ? "text-primary border-b-2 border-primary font-bold"
                   : ""
               }`}
             >
               Mis eventos
             </Link>
+          ) : (
+            <Link
+              href="/contacto"
+              className={`transition-colors py-1 hover:text-primary ${
+                pathname === "/contacto"
+                  ? "text-primary border-b-2 border-primary font-bold"
+                  : ""
+              }`}
+            >
+              Ayuda/Soporte
+            </Link>
           )}
+
+          <Link
+            href="/contacto"
+            className={`transition-colors py-1 hover:text-primary ${
+              pathname === "/contacto"
+                ? "text-primary border-b-2 border-primary font-bold"
+                : ""
+            }`}
+          >
+            Contacto
+          </Link>
         </div>
 
-        {/* Action Controls & Session */}
+        {/* Action Controls & Session - Elementos originales intactos */}
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Quick toggle for testing session vs no-session */}
           <button
             onClick={toggleAuth}
             title="Alternar vista con / sin sesión para probar el MVP"
-            className="text-[9px] font-sans uppercase tracking-widest px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant hover:text-primary border border-muted-border hidden sm:inline-flex items-center gap-1.5 transition-all"
+            className="text-[9px] font-sans uppercase tracking-widest px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant hover:text-primary border border-muted-border hidden sm:inline-flex items-center gap-1.5 transition-all shadow-sm"
           >
             <span
               className={`w-1.5 h-1.5 rounded-full ${
@@ -96,29 +111,16 @@ export default function Navbar() {
           </button>
 
           {!isLoggedIn ? (
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2">
               <Link
                 href="/iniciar-sesion"
-                className="hidden sm:inline-block text-on-surface/80 hover:text-primary font-sans font-semibold text-[11px] uppercase tracking-wider px-3 py-1.5 transition-colors"
+                className="bg-primary text-white hover:bg-primary-container px-8 py-2.5 rounded-full font-sans font-bold text-[10px] uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95"
               >
-                Login
-              </Link>
-              <Link
-                href="/crear-evento"
-                className="bg-primary text-white hover:bg-primary-container px-5 sm:px-7 py-2 sm:py-2.5 rounded-full font-sans font-semibold text-[11px] uppercase tracking-wider transition-all shadow-md active:scale-95"
-              >
-                Crear mi mesa
+                LOGIN
               </Link>
             </div>
           ) : (
-            <div className="relative flex items-center gap-3">
-              <Link
-                href="/crear-evento"
-                className="hidden sm:inline-flex bg-primary text-white hover:bg-primary-container px-5 py-2 rounded-full font-sans font-semibold text-[11px] uppercase tracking-wider transition-all shadow-md active:scale-95"
-              >
-                Crear evento
-              </Link>
-
+            <div className="relative">
               <button
                 onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 className="flex items-center gap-2 text-on-surface hover:text-primary transition-colors py-1 px-2 rounded-full hover:bg-surface-container"
@@ -126,7 +128,7 @@ export default function Navbar() {
                 <div className="w-7 h-7 rounded-full bg-rosa-petalo/60 border border-primary/30 text-primary flex items-center justify-center font-bold text-xs uppercase">
                   {user.name.charAt(0)}
                 </div>
-                <span className="font-sans text-[11px] font-semibold uppercase tracking-wider hidden md:inline-block text-on-surface">
+                <span className="font-sans text-[11px] font-semibold uppercase tracking-wider hidden md:inline-block">
                   {user.name}
                 </span>
                 <span className="material-symbols-outlined text-sm text-on-surface-variant">expand_more</span>
@@ -211,16 +213,16 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu - Elementos originales intactos */}
       {menuOpen && (
         <div className="lg:hidden mt-2 p-6 bg-marfil text-on-surface rounded-3xl shadow-2xl border border-muted-border space-y-4 animate-in fade-in slide-in-from-top-3">
-          <div className="flex flex-col gap-3 font-sans text-xs uppercase tracking-wider">
+          <div className="flex flex-col gap-3 font-sans text-xs uppercase tracking-widest">
             <Link
               href="/crear-evento"
               onClick={() => setMenuOpen(false)}
-              className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between font-semibold text-primary"
+              className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
             >
-              <span>Crear mi mesa</span>
+              <span>Crear evento</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
             <Link
@@ -228,7 +230,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
             >
-              <span>Cómo funciona</span>
+              <span>Cómo crear evento</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
             <Link
@@ -236,23 +238,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
             >
-              <span>Celebraciones</span>
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </Link>
-            <Link
-              href="/#plantillas-demo"
-              onClick={() => setMenuOpen(false)}
-              className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
-            >
-              <span>Inspiración</span>
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </Link>
-            <Link
-              href="/contacto#faq"
-              onClick={() => setMenuOpen(false)}
-              className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
-            >
-              <span>Preguntas</span>
+              <span>Buscar evento</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
             {isLoggedIn && (
@@ -273,6 +259,14 @@ export default function Navbar() {
               <span>Contacto & Concierge</span>
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
+            <Link
+              href="/aviso-legal"
+              onClick={() => setMenuOpen(false)}
+              className="py-2 border-b border-muted-border hover:text-primary flex items-center justify-between"
+            >
+              <span>Términos y Privacidad</span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </Link>
           </div>
 
           <div className="pt-2 flex items-center justify-between">
@@ -287,7 +281,7 @@ export default function Navbar() {
               <Link
                 href="/iniciar-sesion"
                 onClick={() => setMenuOpen(false)}
-                className="bg-primary text-white px-6 py-2 rounded-full font-sans font-bold text-xs uppercase shadow-md"
+                className="bg-primary text-white hover:bg-primary-container px-6 py-2 rounded-full font-sans font-bold text-xs uppercase shadow-2xl"
               >
                 Login
               </Link>
