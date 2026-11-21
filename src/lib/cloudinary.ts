@@ -118,3 +118,4 @@ export async function uploadToCloudinary(
     format: result.format,
   };
 }
+
