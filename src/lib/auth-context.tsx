@@ -292,8 +292,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           loadSupabaseUserProfile(session.user.id, session.user.email || "");
           loadSupabaseEvents(session.user.id);
         } else {
-          // Check local storage fallback
+          // Load public active events from Supabase + local fallback
           loadLocalFallback();
+          loadSupabaseEvents();
         }
       });
 
@@ -306,6 +307,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } else if (event === "SIGNED_OUT") {
             setIsLoggedIn(false);
             setUser(INITIAL_USER);
+            await loadSupabaseEvents();
           }
         }
       );
@@ -382,7 +384,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loadSupabaseEvents = async (userId: string) => {
+  const loadSupabaseEvents = async (userId?: string) => {
     try {
       const { data: dbEvents, error } = await supabase
         .from("events")
@@ -392,7 +394,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           rsvps (*),
           dedicatorias (*)
         `)
-        .eq("user_id", userId);
+        .order("created_at", { ascending: false });
 
       if (dbEvents && !error && dbEvents.length > 0) {
         const formatted: EventData[] = dbEvents.map((e: any) => ({
@@ -420,7 +422,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           itinerary: e.itinerary || [],
           primaryColor: e.primary_color || "#8B162B",
           typography: e.typography || "Playfair Display",
-          isHost: true,
+          isHost: Boolean(userId && e.user_id === userId),
           gifts: (e.gifts || []).map((g: any) => ({
             id: g.id,
             title: g.title,
@@ -441,16 +443,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             dietaryRestrictions: r.dietary_restrictions,
             createdAt: r.created_at,
           })),
-          dedicatorias: (e.dedicatorias || []).map((d: any) => ({
-            id: d.id,
-            authorName: d.author_name,
-            message: d.message,
-            amount: Number(d.amount),
-            createdAt: d.created_at,
-          })),
+          dedicatorias: (e.dedicatorias || [])
+            .filter((d: any) => d.message && d.message.trim().length > 0)
+            .map((d: any) => ({
+              id: d.id,
+              authorName: d.author_name,
+              message: d.message,
+              amount: Number(d.amount),
+              createdAt: d.created_at,
+            })),
         }));
 
-        setEvents(formatted);
+        const existingSlugs = new Set(formatted.map((ev) => ev.slug));
+        const fallbackDemos = INITIAL_EVENTS.filter((ev) => !existingSlugs.has(ev.slug));
+        setEvents([...formatted, ...fallbackDemos]);
       }
     } catch (err) {
       console.error("Error loading Supabase events:", err);
@@ -522,7 +528,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ) => {
     if (isSupabaseConfigured) {
       try {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -538,7 +544,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return { success: false, error: error.message };
         }
 
-        setIsLoggedIn(true);
+        if (data?.user) {
+          setUser((prev) => ({
+            ...prev,
+            id: data.user!.id,
+            email,
+            name: metadata?.name || prev.name,
+            lastName: metadata?.lastName || prev.lastName,
+            phone: metadata?.phone || prev.phone,
+          }));
+        }
+
+        setIsLoggedIn(Boolean(data?.session || data?.user));
         return { success: true };
       } catch (err: any) {
         return { success: false, error: err?.message || "Error al registrarse" };
@@ -602,28 +619,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = { ...user, ...data };
     saveUser(updated);
 
-    if (isSupabaseConfigured && user.id) {
+    if (isSupabaseConfigured) {
       try {
-        await supabase
-          .from("profiles")
-          .update({
-            name: updated.name,
-            last_name: updated.lastName,
-            phone: updated.phone,
-            nationality: updated.nationality,
-            country: updated.country,
-            state: updated.state,
-            city: updated.city,
-            address: updated.address,
-            document_type: updated.documentType,
-            document_number: updated.documentNumber,
-            document_validated: updated.documentValidated,
-            document_url: updated.documentFileName,
-            accepted_terms: updated.acceptedTerms,
-            accepted_privacy: updated.acceptedPrivacy,
-            consent_data_processing: updated.consentDataProcessing,
-          })
-          .eq("id", user.id);
+        const { data: authData } = await supabase.auth.getUser();
+        const activeUserId = authData.user?.id || (user.id !== "usr_mock_01" ? user.id : undefined);
+        if (activeUserId) {
+          await supabase
+            .from("profiles")
+            .update({
+              name: updated.name,
+              last_name: updated.lastName,
+              phone: updated.phone,
+              nationality: updated.nationality,
+              country: updated.country,
+              state: updated.state,
+              city: updated.city,
+              address: updated.address,
+              document_type: updated.documentType,
+              document_number: updated.documentNumber,
+              document_validated: updated.documentValidated,
+              document_url: updated.documentFileName,
+              accepted_terms: updated.acceptedTerms,
+              accepted_privacy: updated.acceptedPrivacy,
+              consent_data_processing: updated.consentDataProcessing,
+            })
+            .eq("id", activeUserId);
+        }
       } catch (err) {
         console.error("Error updating profile in Supabase:", err);
       }
@@ -640,21 +661,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     saveUser(updated);
 
-    if (isSupabaseConfigured && user.id) {
+    if (isSupabaseConfigured) {
       try {
-        await supabase
-          .from("profiles")
-          .update({
-            bank_holder_name: updated.bankInfo.holderName,
-            bank_name: updated.bankInfo.bankName,
-            bank_account_type: updated.bankInfo.accountType,
-            bank_account_number: updated.bankInfo.accountNumber,
-            bank_clabe: updated.bankInfo.clabe,
-            stripe_connected: updated.bankInfo.stripeConnected,
-            stripe_account_id: updated.bankInfo.stripeAccountId,
-            stripe_payouts_enabled: updated.bankInfo.stripePayoutsEnabled,
-          })
-          .eq("id", user.id);
+        const { data: authData } = await supabase.auth.getUser();
+        const activeUserId = authData.user?.id || (user.id !== "usr_mock_01" ? user.id : undefined);
+        if (activeUserId) {
+          await supabase
+            .from("profiles")
+            .update({
+              bank_holder_name: updated.bankInfo.holderName,
+              bank_name: updated.bankInfo.bankName,
+              bank_account_type: updated.bankInfo.accountType,
+              bank_account_number: updated.bankInfo.accountNumber,
+              bank_clabe: updated.bankInfo.clabe,
+              stripe_connected: updated.bankInfo.stripeConnected,
+              stripe_account_id: updated.bankInfo.stripeAccountId,
+              stripe_payouts_enabled: updated.bankInfo.stripePayoutsEnabled,
+            })
+            .eq("id", activeUserId);
+        }
       } catch (err) {
         console.error("Error updating bank info in Supabase:", err);
       }
@@ -717,34 +742,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const updated = [newEvent, ...events];
     saveEvents(updated);
 
-    if (isSupabaseConfigured && user.id) {
+    if (isSupabaseConfigured) {
       try {
-        const { data: dbEvent } = await supabase
-          .from("events")
-          .insert({
-            user_id: user.id,
-            slug: newEvent.slug,
-            title: newEvent.title,
-            type: newEvent.type,
-            host_names: newEvent.hostNames,
-            co_hosts: newEvent.coHosts,
-            date: newEvent.date,
-            time: newEvent.time,
-            location_name: newEvent.locationName,
-            address: newEvent.address,
-            city: newEvent.city,
-            cover_image: newEvent.coverImage,
-            story: newEvent.story,
-            dress_code: newEvent.dressCode,
-            itinerary: newEvent.itinerary,
-            primary_color: newEvent.primaryColor,
-            typography: newEvent.typography,
-          })
-          .select()
-          .single();
+        const { data: authData } = await supabase.auth.getUser();
+        const activeUserId = authData.user?.id || (user.id !== "usr_mock_01" ? user.id : undefined);
+        if (activeUserId) {
+          const { data: dbEvent } = await supabase
+            .from("events")
+            .insert({
+              user_id: activeUserId,
+              slug: newEvent.slug,
+              title: newEvent.title,
+              type: newEvent.type,
+              host_names: newEvent.hostNames,
+              co_hosts: newEvent.coHosts,
+              date: newEvent.date,
+              time: newEvent.time,
+              location_name: newEvent.locationName,
+              address: newEvent.address,
+              city: newEvent.city,
+              cover_image: newEvent.coverImage,
+              story: newEvent.story,
+              dress_code: newEvent.dressCode,
+              itinerary: newEvent.itinerary,
+              primary_color: newEvent.primaryColor,
+              typography: newEvent.typography,
+            })
+            .select()
+            .single();
 
-        if (dbEvent) {
-          newEvent.id = dbEvent.id;
+          if (dbEvent) {
+            newEvent.id = dbEvent.id;
+            saveEvents(updated.map((ev) => (ev.slug === newEvent.slug ? { ...ev, id: dbEvent.id } : ev)));
+          }
         }
       } catch (err) {
         console.error("Error creating event in Supabase:", err);
@@ -807,18 +837,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     saveEvents(updated);
 
-    if (isSupabaseConfigured && targetEvent) {
+    if (isSupabaseConfigured && targetEvent && !targetEvent.id.startsWith("evt_")) {
       try {
-        await supabase.from("gifts").insert({
-          event_id: targetEvent.id,
-          title: gift.title,
-          description: gift.description,
-          category: gift.category,
-          target_price: gift.targetPrice,
-          current_amount: 0,
-          is_free_amount: gift.isFreeAmount,
-          image_url: gift.image,
-        });
+        const { data: dbGift } = await supabase
+          .from("gifts")
+          .insert({
+            event_id: targetEvent.id,
+            title: gift.title,
+            description: gift.description,
+            category: gift.category,
+            target_price: gift.targetPrice,
+            current_amount: 0,
+            is_free_amount: gift.isFreeAmount,
+            image_url: gift.image,
+          })
+          .select()
+          .single();
+
+        if (dbGift) {
+          const synced = updated.map((ev) =>
+            ev.slug === slug
+              ? {
+                  ...ev,
+                  gifts: ev.gifts.map((g) => (g.id === newGift.id ? { ...g, id: dbGift.id } : g)),
+                }
+              : ev
+          );
+          saveEvents(synced);
+        }
       } catch (err) {
         console.error("Error adding gift to Supabase:", err);
       }
@@ -868,24 +914,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (isSupabaseConfigured) {
       try {
-        const currentGift = events
-          .find((e) => e.slug === slug)
-          ?.gifts.find((g) => g.id === giftId);
-
-        if (currentGift) {
-          await supabase
-            .from("gifts")
-            .update({ current_amount: currentGift.currentAmount + amount })
-            .eq("id", giftId);
-        }
-
         const targetEvt = events.find((e) => e.slug === slug);
-        if (targetEvt && dedication?.message) {
+        if (targetEvt && !targetEvt.id.startsWith("evt_") && !giftId.startsWith("gift_")) {
+          // Inserting into dedicatorias atomically increments gifts.current_amount via Postgres trigger
           await supabase.from("dedicatorias").insert({
             event_id: targetEvt.id,
             gift_id: giftId,
-            author_name: dedication.name || "Invitado con Amor",
-            message: dedication.message,
+            author_name: dedication?.name || "Invitado con Amor",
+            message: dedication?.message || "",
             amount: amount,
           });
         }
@@ -916,7 +952,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isSupabaseConfigured) {
       try {
         const targetEvt = events.find((e) => e.slug === slug);
-        if (targetEvt) {
+        if (targetEvt && !targetEvt.id.startsWith("evt_")) {
           await supabase.from("rsvps").insert({
             event_id: targetEvt.id,
             name: rsvp.name,
@@ -957,7 +993,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isSupabaseConfigured) {
       try {
         const targetEvt = events.find((e) => e.slug === slug);
-        if (targetEvt) {
+        if (targetEvt && !targetEvt.id.startsWith("evt_")) {
           await supabase.from("dedicatorias").insert({
             event_id: targetEvt.id,
             author_name: dedicatoria.authorName,
