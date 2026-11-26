@@ -528,10 +528,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   ) => {
     if (isSupabaseConfigured) {
       try {
+        const emailRedirectTo =
+          typeof window !== "undefined"
+            ? `${window.location.origin}/auth/callback?next=/crear-evento`
+            : undefined;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
+            emailRedirectTo,
             data: {
               name: metadata?.name || "",
               last_name: metadata?.lastName || "",
@@ -585,7 +590,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: typeof window !== "undefined" ? `${window.location.origin}/perfil` : undefined,
+          redirectTo:
+            typeof window !== "undefined"
+              ? `${window.location.origin}/auth/callback?next=/perfil`
+              : undefined,
         },
       });
       return;
