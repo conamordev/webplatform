@@ -1,13 +1,35 @@
 import { v2 as cloudinary } from "cloudinary";
 
+// Parse optional CLOUDINARY_URL (cloudinary://api_key:api_secret@cloud_name)
+function parseCloudinaryUrl(rawUrl?: string) {
+  if (!rawUrl || !rawUrl.startsWith("cloudinary://")) return null;
+  try {
+    const parsed = new URL(rawUrl);
+    return {
+      cloudName: parsed.hostname,
+      apiKey: decodeURIComponent(parsed.username),
+      apiSecret: decodeURIComponent(parsed.password),
+    };
+  } catch {
+    return null;
+  }
+}
+
+const fromUrl = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
+
 const cloudName =
+  fromUrl?.cloudName ||
   process.env.CLOUDINARY_CLOUD_NAME ||
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
   "";
-const apiKey = process.env.CLOUDINARY_API_KEY || "";
-const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
+const apiKey = fromUrl?.apiKey || process.env.CLOUDINARY_API_KEY || "";
+const apiSecret = fromUrl?.apiSecret || process.env.CLOUDINARY_API_SECRET || "";
+const uploadPreset =
+  process.env.CLOUDINARY_UPLOAD_PRESET ||
+  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+  "conamor_uploads";
 
-export const isCloudinaryConfigured = Boolean(
+export const isCloudinarySignedConfigured = Boolean(
   cloudName &&
     apiKey &&
     apiSecret &&
@@ -15,7 +37,13 @@ export const isCloudinaryConfigured = Boolean(
     !apiKey.includes("your-api-key")
 );
 
-if (isCloudinaryConfigured) {
+export const isCloudinaryConfigured = Boolean(
+  cloudName &&
+    !cloudName.includes("your-cloud-name") &&
+    (isCloudinarySignedConfigured || Boolean(uploadPreset))
+);
+
+if (isCloudinarySignedConfigured) {
   cloudinary.config({
     cloud_name: cloudName,
     api_key: apiKey,
@@ -36,21 +64,23 @@ export interface CloudinaryUploadResult {
 }
 
 /**
- * Optimizes an existing Cloudinary URL or public ID with auto-format and auto-quality
+ * Builds an optimized Cloudinary delivery URL following Cloudinary transformation rules:
+ * - Separate components with `/`, placing `f_auto/q_auto` as final components
+ * - Explicit crop mode (`c_scale` for single dimension, `c_fill,g_auto` for exact dimensions)
  */
 export function getOptimizedImageUrl(
   imagePath: string,
   options: {
     width?: number;
     height?: number;
-    crop?: "fill" | "fit" | "scale" | "thumb";
+    crop?: "fill" | "fit" | "scale" | "thumb" | "limit";
+    gravity?: "auto" | "face" | "center";
     quality?: "auto" | number;
-    format?: "auto" | "webp" | "avif";
+    format?: "auto" | "webp" | "avif" | "jpg" | "png";
   } = {}
 ): string {
   if (!imagePath) return "";
 
-  // If it's already an external non-cloudinary URL (e.g. Unsplash), return as is
   if (!imagePath.includes("res.cloudinary.com") && imagePath.startsWith("http")) {
     return imagePath;
   }
@@ -58,40 +88,59 @@ export function getOptimizedImageUrl(
   const {
     width,
     height,
-    crop = "fill",
+    crop = width && height ? "fill" : "scale",
+    gravity = "auto",
     quality = "auto",
     format = "auto",
   } = options;
 
-  // Build transformation string
-  const transformations: string[] = [`f_${format}`, `q_${quality}`];
-  if (width) transformations.push(`w_${width}`);
-  if (height) transformations.push(`h_${height}`);
-  if (width && height) transformations.push(`c_${crop}`);
+  const components: string[] = [];
 
-  const transformString = transformations.join(",");
+  if (width && height) {
+    const qualifiers = [`c_${crop}`];
+    if (crop === "fill" || crop === "thumb") {
+      qualifiers.push(`g_${gravity}`);
+    }
+    qualifiers.push(`h_${height}`, `w_${width}`);
+    components.push(qualifiers.join(","));
+  } else if (width) {
+    const singleCrop = crop === "limit" ? "limit" : "scale";
+    components.push(`c_${singleCrop},w_${width}`);
+  } else if (height) {
+    const singleCrop = crop === "limit" ? "limit" : "scale";
+    components.push(`c_${singleCrop},h_${height}`);
+  }
+
+  components.push(`f_${format}`, `q_${quality}`);
+  const transformChain = components.join("/");
 
   if (imagePath.includes("res.cloudinary.com")) {
-    // Inject transformations into existing Cloudinary URL
-    const uploadIndex = imagePath.indexOf("/upload/");
+    if (imagePath.includes("/f_auto/q_auto/") && !width && !height) {
+      return imagePath;
+    }
+    const uploadIndex = imagePath.indexOf("/image/upload/");
     if (uploadIndex !== -1) {
-      return `${imagePath.slice(0, uploadIndex)}/upload/${transformString}/${imagePath.slice(
-        uploadIndex + 8
-      )}`;
+      const prefix = imagePath.slice(0, uploadIndex + "/image/upload/".length);
+      const rest = imagePath
+        .slice(uploadIndex + "/image/upload/".length)
+        .replace(/^f_auto\/q_auto\//, "");
+      return `${prefix}${transformChain}/${rest}`;
     }
     return imagePath;
   }
 
-  // Treat as public ID
   if (cloudName) {
-    return `https://res.cloudinary.com/${cloudName}/image/upload/${transformString}/${imagePath}`;
+    return `https://res.cloudinary.com/${cloudName}/image/upload/${transformChain}/${imagePath}`;
   }
 
   return imagePath;
 }
 
 /**
- * Uploads a base64 string or buffer to Cloudinary with secure server-side execution
+ * Uploads an image (base64 data URI) to Cloudinary:
+ * - Uses signed Node SDK upload when API key + secret are configured
+ * - Uses locked-down `conamor_uploads` preset over REST when only cloud_name + preset are set
+ * - Stores original once (no incoming f_auto) and returns optimized delivery URL
  */
 export async function uploadToCloudinary(
   fileData: string,
@@ -99,23 +148,60 @@ export async function uploadToCloudinary(
 ): Promise<CloudinaryUploadResult> {
   if (!isCloudinaryConfigured) {
     throw new Error(
-      "Cloudinary no está configurado. Configura CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY y CLOUDINARY_API_SECRET en tus variables de entorno."
+      "Cloudinary no está configurado. Configura NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME en tus variables de entorno."
     );
   }
 
-  const result = await cloudinary.uploader.upload(fileData, {
-    folder: `conamor/${folder}`,
-    resource_type: "image",
-    transformation: [{ quality: "auto", fetch_format: "auto" }],
-  });
+  if (isCloudinarySignedConfigured) {
+    const result = await cloudinary.uploader.upload(fileData, {
+      upload_preset: uploadPreset || undefined,
+      asset_folder: `conamor/${folder}`,
+      public_id_prefix: `conamor/${folder}`,
+      resource_type: "image",
+      tags: ["conamor", folder],
+    });
+
+    const optimizedUrl = getOptimizedImageUrl(result.secure_url);
+
+    return {
+      publicId: result.public_id,
+      url: optimizedUrl,
+      secureUrl: optimizedUrl,
+      width: result.width,
+      height: result.height,
+      format: result.format,
+    };
+  }
+
+  // Unsigned preset upload (works without exposing or requiring API secret)
+  const form = new FormData();
+  form.append("file", fileData);
+  form.append("upload_preset", uploadPreset);
+  form.append("tags", `conamor,${folder}`);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: form,
+    }
+  );
+
+  const result = await response.json();
+  if (!response.ok || result.error) {
+    throw new Error(
+      result?.error?.message || "Error al subir la imagen a Cloudinary"
+    );
+  }
+
+  const optimizedUrl = getOptimizedImageUrl(result.secure_url);
 
   return {
     publicId: result.public_id,
-    url: result.url,
-    secureUrl: result.secure_url,
+    url: optimizedUrl,
+    secureUrl: optimizedUrl,
     width: result.width,
     height: result.height,
     format: result.format,
   };
 }
-

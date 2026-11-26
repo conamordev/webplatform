@@ -1,16 +1,25 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
+export const isStripeConfigured = Boolean(
+  process.env.STRIPE_SECRET_KEY &&
+    !process.env.STRIPE_SECRET_KEY.includes("sk_test_...") &&
+    !process.env.STRIPE_SECRET_KEY.includes("placeholder")
+);
+
+if (!isStripeConfigured && process.env.NODE_ENV !== "production") {
   console.warn(
-    "⚠️ ADVERTENCIA: STRIPE_SECRET_KEY no está definida en las variables de entorno. Configúrala en .env.local"
+    "⚠️ ADVERTENCIA: STRIPE_SECRET_KEY no está definida en las variables de entorno. Configúrala en .env.local o en Vercel."
   );
 }
 
-// Inicialización de Stripe con la versión más reciente compatible con Accounts v2
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  typescript: true,
-  appInfo: {
-    name: "Con Amor - Mesas de Regalos",
-    version: "0.1.0",
-  },
-});
+// Safe initialization so `next build` on Vercel never crashes if STRIPE_SECRET_KEY is not yet set
+export const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY || "sk_test_placeholder_for_build_only",
+  {
+    typescript: true,
+    appInfo: {
+      name: "ConAmor, - Mesa de Regalos Digital",
+      version: "0.1.0",
+    },
+  }
+);
